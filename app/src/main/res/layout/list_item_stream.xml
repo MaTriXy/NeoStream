@@ -74,26 +74,25 @@
         android:layout_toEndOf="@+id/imgChannel"
         android:layout_marginTop="2dp"/>
 
+    <ImageView
+        android:id="@+id/imgViewers"
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:layout_alignBottom="@+id/imgThumbnail"
+        android:layout_marginBottom="3dp"
+        android:layout_marginLeft="3dp"
+        android:background="@drawable/icon_online"/>
+
     <TextView
         android:id="@+id/lblViewers"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
-        android:layout_marginRight="2dp"
-        android:gravity="bottom|right"
+        android:layout_marginLeft="15dp"
         android:maxLines="1"
         android:textSize="14sp"
         tools:text="129"
         android:layout_alignBottom="@+id/imgThumbnail"
-        android:layout_alignParentStart="true" />
-
-    <ImageView
-        android:id="@+id/imgViewers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_marginLeft="2dp"
-        android:layout_below="@id/lblTitle"
-        android:layout_alignBottom="@id/lblViewers"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignLeft="@+id/imgViewers"
+        android:textColor="@color/viewersThumbnail"/>
 
 </RelativeLayout>
