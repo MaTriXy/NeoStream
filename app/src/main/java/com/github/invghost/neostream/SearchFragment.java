@@ -91,6 +91,8 @@ public class SearchFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_search, container, false);
 
+        getActivity().setTitle("Search");
+
         ((EditText)view.findViewById(R.id.searchEditText)).setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
