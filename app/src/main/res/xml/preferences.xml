@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Functionality">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="check_box_preference_2"
+            android:summary="Caches responses to reduce the amount of API requests. Disable if information isn't updating as frequently."
+            android:title="Use API Caching (EXPERIMENTAL)" />
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_live_notifications"
+            android:summary="Enable notifications when followed channels go live. Disable if you experience high battery consumption."
+            android:title="Live Notifications" />
+
+        </PreferenceCategory>
+
+    <PreferenceCategory android:title="Video">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="use_external_player"
+            android:summary="Use a installed video player instead of the HTML5 player."
+            android:title="Use external video player" />
+        <ListPreference
+            android:defaultValue="1"
+            android:dependency="use_external_player"
+            android:entries="@array/qualities"
+            android:entryValues="@array/qualities"
+            android:key="preferred_quality"
+            android:summary="Only applies to external video player"
+            android:title="Default Quality" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="Other">
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_chat"
+            android:summary="Shows the chat at the bottom of the screen if using the HTML5 player."
+            android:title="Enable Chat" />
+
+    </PreferenceCategory>
+</PreferenceScreen>

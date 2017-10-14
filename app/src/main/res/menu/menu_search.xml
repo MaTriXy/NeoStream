@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/filter"
+        android:title="Filter"
+        app:showAsAction="always">
+        <menu>
+            <group
+                android:id="@+id/search_filter_group"
+                android:checkableBehavior="single">
+
+                <item
+                    android:id="@+id/menu_filter_channel"
+                    android:title="Channels"
+                    android:checked="true"/>
+                <item
+                    android:id="@+id/menu_filter_stream"
+                    android:title="Streams"/>
+            </group>
+        </menu>
+    </item>
+
+</menu>
