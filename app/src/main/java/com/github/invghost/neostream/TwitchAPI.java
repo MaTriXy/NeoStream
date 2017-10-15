@@ -412,10 +412,6 @@ class TwitchAPI {
     private static Map<URL, JSONObject> cachedJSON;
 
     private static JSONObject GetJSON(URL url) {
-        //aye don't use it!
-        if(!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_twitch_api", true))
-            return null;
-
         boolean useCache = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("enable_api_cache", false);
 
         if(useCache) {
