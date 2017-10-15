@@ -56,7 +56,7 @@ class ChannelAdapter extends BaseAdapter {
         if(url == null)
             url = data.get(position).offlineBannerURL;
 
-        ImageView imageView = (ImageView)vi.findViewById(R.id.imgThumbnail);
+        ImageView imageView = (ImageView)vi.findViewById(R.id.imgIcon);
         Glide.with(context).load(url).crossFade().into(imageView);
 
         return vi;

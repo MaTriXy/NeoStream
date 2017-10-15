@@ -7,32 +7,87 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="240dp">
-        <ImageView
-            android:id="@+id/channelBanner"
+        android:layout_height="120dp">
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scaleType="centerCrop"/>
+            android:clipToPadding="false">
+            <ImageView
+                android:id="@+id/channelBanner"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"
+                android:scaleType="centerCrop"
+                android:background="@color/colorPrimaryDark"/>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/channelLogo"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_gravity="top"
-            android:layout_marginTop="29dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="20dp"
             android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            android:background="@color/colorAccentLight"/>
+
+        <TextView
+            android:id="@+id/channelTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Channel Title"
+            android:layout_toRightOf="@+id/channelLogo"
+            android:layout_alignTop="@+id/channelLogo"
+            android:layout_marginLeft="15dp"
+            android:textSize="24dp"
+            android:textColor="@color/tabText"
+            android:maxWidth="220dp"/>
 
         <TextView
             android:id="@+id/channelDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="This is a very testy text for testy people :o"
-            android:layout_below="@+id/channelLogo"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="32dp" />
+            tools:text="Channel Description"
+            android:layout_toRightOf="@+id/channelLogo"
+            android:layout_marginTop="55dp"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/tabText"
+            android:maxWidth="220dp"/>
+
+        <TextView
+            android:id="@+id/channelStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="Channel Status"
+            android:layout_toRightOf="@+id/channelLogo"
+            android:layout_marginTop="78dp"
+            android:layout_marginLeft="15dp"
+            android:textColor="@color/tabText"
+            android:textStyle="bold"
+            android:maxWidth="220dp"/>
+
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/ic_favorite_border_black_24dp"/>
 
     </RelativeLayout>
+
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/tabStrip"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:background="@color/colorPrimaryDark"/>
+
+    </android.support.v4.view.ViewPager>
 
     <Spinner
         android:id="@+id/qualitySpinner"

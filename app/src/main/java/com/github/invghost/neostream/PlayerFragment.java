@@ -111,4 +111,12 @@ public class PlayerFragment extends Fragment {
             playerContainer.addView(playerWebView);
         }
     }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        ((MainActivity)getActivity()).playerWebView = null;
+        ((MainActivity)getActivity()).chatWebView = null;
+    }
 }

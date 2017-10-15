@@ -1,33 +1,75 @@
 package com.github.invghost.neostream;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.PagerTabStrip;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+class BlurTransformation extends BitmapTransformation {
+    private RenderScript rs;
+
+    BlurTransformation(Context context) {
+        super( context );
+
+        rs = RenderScript.create( context );
+    }
+
+    @Override
+    protected Bitmap transform(BitmapPool pool, Bitmap toTransform, int outWidth, int outHeight) {
+        Bitmap blurredBitmap = toTransform.copy(Bitmap.Config.ARGB_8888, true);
+
+        Allocation input = Allocation.createFromBitmap(
+                rs,
+                blurredBitmap,
+                Allocation.MipmapControl.MIPMAP_FULL,
+                Allocation.USAGE_SHARED
+        );
+        Allocation output = Allocation.createTyped(rs, input.getType());
+
+        ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        script.setInput(input);
+        script.setRadius(30);
+        script.forEach(output);
+
+        output.copyTo(blurredBitmap);
+
+        toTransform.recycle();
+
+        return blurredBitmap;
+    }
+
+    @Override
+    public String getId() {
+        return "blur";
+    }
+}
 
 class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
     private ChannelFragment fragment;
@@ -37,13 +79,22 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
     }
 
     protected TwitchChannel doInBackground(String... urls) {
-        return TwitchAPI.GetChannel(urls[0]);
+        TwitchChannel channel = TwitchAPI.GetChannel(urls[0]);
+        channel.stream = TwitchAPI.GetStream(urls[0]);
+
+        return channel;
     }
 
     protected void onPostExecute(TwitchChannel channel) {
+        if(fragment == null || fragment.getView() == null)
+            return;
+
         ImageView imageView = (ImageView)fragment.getView().findViewById(R.id.channelBanner);
+
         if(channel.bannerURL != null)
-            Glide.with(fragment.getContext()).load(channel.bannerURL).crossFade().into(imageView);
+            Glide.with(fragment.getContext()).load(channel.bannerURL).transform(new BlurTransformation(fragment.getContext())).crossFade().into(imageView);
+
+        imageView.setColorFilter(Color.rgb(123, 123, 123), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         ImageView logoImageView = (ImageView)fragment.getView().findViewById(R.id.channelLogo);
         if(channel.logoURL != null)
@@ -51,8 +102,23 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
 
         if(channel.description != null)
             ((TextView)fragment.getView().findViewById(R.id.channelDescription)).setText(channel.description);
+        else
+            ((TextView)fragment.getView().findViewById(R.id.channelDescription)).setText("This channel has no description.");
+
+        ((TextView)fragment.getView().findViewById(R.id.channelTitle)).setText(channel.displayName);
+
+        if(channel.stream != null)
+            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText("Currently streaming " + channel.game + " for " + channel.stream.viewers + " viewers");
+        else if(channel.hosting != null)
+            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText("Currently hosting " + channel.hosting.displayName);
+        else
+            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText("Currently offline");
 
         fragment.getActivity().setTitle(channel.displayName);
+
+        ViewPager viewPager = (ViewPager)fragment.getView().findViewById(R.id.pager);
+        viewPager.setOffscreenPageLimit(0);
+        viewPager.setAdapter(new ChannelTabsAdapter(channel, fragment.getChildFragmentManager()));
     }
 }
 
@@ -70,29 +136,6 @@ class RetrieveQualitiesTask extends AsyncTask<String, Void, ArrayList<String>> {
     protected void onPostExecute(ArrayList<String> qualities) {
         if(fragment.getView() == null)
             return;
-
-        Spinner spinner = (Spinner)fragment.getView().findViewById(R.id.qualitySpinner);
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(fragment.getContext(), android.R.layout.simple_spinner_item, qualities);
-        spinner.setAdapter(adapter);
-    }
-}
-
-class PlayStreamTask extends AsyncTask<String, Void, String> {
-    private FragmentActivity fragment;
-
-    PlayStreamTask(FragmentActivity fragment) {
-        this.fragment = fragment;
-    }
-
-    protected String doInBackground(String... urls) {
-        String URI = TwitchAPI.GetStreamURI(urls[0], urls[1]);
-
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.parse(URI), "video/flv");
-        fragment.startActivity(intent);
-
-        return "dummy";
     }
 }
 
@@ -107,27 +150,22 @@ public class ChannelFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        new RetrieveChannelTask(this).execute(getArguments().getString("channel"));
+        new RetrieveQualitiesTask(this).execute(getArguments().getString("channel"));
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.fragment_channel, container, false);
+        View view = inflater.inflate(R.layout.fragment_channel, container, false);
 
-        Button playButton = (Button)view.findViewById(R.id.playStream);
-        playButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("use_external_player", true)) {
-                    String quality = ((Spinner) view.findViewById(R.id.qualitySpinner)).getSelectedItem().toString();
-
-                    new PlayStreamTask(getActivity()).execute(getArguments().getString("channel"), quality);
-                } else {
-                    PlayerFragment fragment = new PlayerFragment();
-
-                    fragment.setArguments(getArguments());
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
-                }
-            }
-        });
+        PagerTabStrip tabStrip = (PagerTabStrip)view.findViewById(R.id.tabStrip);
+        tabStrip.setTabIndicatorColor(getResources().getColor(R.color.tabText));
+        tabStrip.setTextColor(getResources().getColor(R.color.tabText));
 
         return view;
     }

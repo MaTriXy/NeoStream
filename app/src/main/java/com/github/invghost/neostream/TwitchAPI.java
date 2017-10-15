@@ -2,6 +2,8 @@ package com.github.invghost.neostream;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
@@ -26,7 +28,21 @@ class TwitchStream {
     String thumbnailURL;
 }
 
-class TwitchChannel {
+class TwitchChannel implements Parcelable {
+    TwitchChannel() {}
+
+    private TwitchChannel(Parcel in) {
+        id = in.readInt();
+        username = in.readString();
+        displayName = in.readString();
+        status = in.readString();
+        game = in.readString();
+        offlineBannerURL = in.readString();
+        logoURL = in.readString();
+        bannerURL = in.readString();
+        description = in.readString();
+    }
+
     int id;
     String username, displayName, status, game;
     String offlineBannerURL, logoURL;
@@ -39,6 +55,41 @@ class TwitchChannel {
     //DO NOT USE
     //ONLY USED BY FOLLOWED CHANNELS
     TwitchStream stream = null;
+
+    public static final Creator<TwitchChannel> CREATOR = new Creator<TwitchChannel>() {
+        @Override
+        public TwitchChannel createFromParcel(Parcel in) {
+            return new TwitchChannel(in);
+        }
+
+        @Override
+        public TwitchChannel[] newArray(int size) {
+            return new TwitchChannel[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(username);
+        dest.writeString(displayName);
+        dest.writeString(status);
+        dest.writeString(game);
+        dest.writeString(offlineBannerURL);
+        dest.writeString(logoURL);
+        dest.writeString(bannerURL);
+        dest.writeString(description);
+    }
+}
+
+class TwitchVideo {
+    String title, game;
+    String thumbnailURL;
 }
 
 class TwitchAPI {
@@ -411,9 +462,36 @@ class TwitchAPI {
         return null;
     }
 
+    static ArrayList<TwitchVideo> GetVideos(String username) {
+        ArrayList<TwitchVideo> videos = new ArrayList<>();
+
+        try {
+            URL url = new URL("https://api.twitch.tv/kraken/channels/" + URLEncoder.encode(username, "UTF-8") + "/videos");
+            JSONObject json = GetJSON(url);
+
+            if(json != null) {
+                for (int i = 0; i < json.getJSONArray("videos").length(); i++) {
+                    TwitchVideo video = new TwitchVideo();
+                    video.title = json.getJSONArray("videos").getJSONObject(i).getString("title");
+                    video.game = json.getJSONArray("videos").getJSONObject(i).getString("game");
+                    video.thumbnailURL = json.getJSONArray("videos").getJSONObject(i).getString("preview");
+
+                    videos.add(video);
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return videos;
+    }
+
     private static Map<URL, JSONObject> cachedJSON;
 
     private static JSONObject GetJSON(URL url) {
+        if(context == null)
+            return null;
+
         boolean useCache = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("enable_api_cache", false);
 
         if(useCache) {
