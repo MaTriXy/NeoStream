@@ -34,7 +34,7 @@ class TwitchChannel {
     String description;
 
     //channel that its hosting, if any
-    String hosting;
+    TwitchChannel hosting;
 
     //DO NOT USE
     //ONLY USED BY FOLLOWED CHANNELS
@@ -85,7 +85,9 @@ class TwitchAPI {
             if(!channelObject.isNull("profile_banner"))
                 channel.bannerURL = channelObject.getString("profile_banner");
 
-            channel.hosting = CheckIfHosting(channel);
+            String hostingUsername = CheckIfHosting(channel);
+            if(hostingUsername != null)
+                channel.hosting = GetChannel(hostingUsername);
         } catch(Exception e) {
             e.printStackTrace();
         }

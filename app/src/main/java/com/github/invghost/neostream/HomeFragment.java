@@ -45,6 +45,9 @@ class CheckChannelStatusTask extends AsyncTask<String, Void, TwitchChannel> {
         TwitchChannel channel = TwitchAPI.GetChannel(params[0]);
         channel.stream = TwitchAPI.GetStream(params[0]); //TODO: this is bad, why why why are we doing this!
 
+        if(channel.hosting != null)
+            channel.hosting.stream = TwitchAPI.GetStream(channel.hosting.username);
+
         return channel;
     }
 

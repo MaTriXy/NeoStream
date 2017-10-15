@@ -7,10 +7,10 @@
     android:padding="8dp">
 
     <ImageView
-        android:id="@+id/imgThumbnail"
-        android:layout_width="113dp"
+        android:id="@+id/imgIcon"
+        android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
         android:layout_alignParentTop="true" />
 
     <TextView
@@ -18,9 +18,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:layout_marginLeft="2dp"
         android:ellipsize="marquee"
-        android:gravity="bottom|left"
+        android:gravity="bottom|start"
         android:lines="1"
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
@@ -30,8 +29,8 @@
         tools:text="Streamer name"
         android:layout_marginBottom="22dp"
         android:layout_marginStart="11dp"
-        android:layout_alignBottom="@+id/imgThumbnail"
-        android:layout_toEndOf="@+id/imgThumbnail" />
+        android:layout_alignBottom="@+id/imgIcon"
+        android:layout_toEndOf="@+id/imgIcon" />
 
     <ImageView
         android:id="@+id/imgStatus"
