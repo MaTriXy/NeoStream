@@ -68,6 +68,9 @@ class RetrieveQualitiesTask extends AsyncTask<String, Void, ArrayList<String>> {
     }
 
     protected void onPostExecute(ArrayList<String> qualities) {
+        if(fragment.getView() == null)
+            return;
+
         Spinner spinner = (Spinner)fragment.getView().findViewById(R.id.qualitySpinner);
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(fragment.getContext(), android.R.layout.simple_spinner_item, qualities);

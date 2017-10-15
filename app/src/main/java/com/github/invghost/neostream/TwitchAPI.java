@@ -27,10 +27,14 @@ class TwitchStream {
 }
 
 class TwitchChannel {
+    int id;
     String username, displayName, status, game;
     String offlineBannerURL, logoURL;
     String bannerURL;
     String description;
+
+    //channel that its hosting, if any
+    String hosting;
 
     //DO NOT USE
     //ONLY USED BY FOLLOWED CHANNELS
@@ -65,6 +69,13 @@ class TwitchAPI {
             channel.status = channelObject.getString("status");
             channel.game = channelObject.getString("game");
 
+            if(channelObject.has("channel_id"))
+                channel.id = channelObject.getInt("channel_id");
+            else if(channelObject.has("id"))
+                channel.id = Integer.parseInt(channelObject.getString("id"));
+            else if(channelObject.has("_id"))
+                channel.id = channelObject.getInt("_id");
+
             if(!channelObject.isNull("logo"))
                 channel.logoURL = channelObject.getString("logo");
 
@@ -73,6 +84,8 @@ class TwitchAPI {
 
             if(!channelObject.isNull("profile_banner"))
                 channel.bannerURL = channelObject.getString("profile_banner");
+
+            channel.hosting = CheckIfHosting(channel);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -374,6 +387,26 @@ class TwitchAPI {
         }
 
         return results;
+    }
+
+    static String CheckIfHosting(TwitchChannel channel) {
+        try {
+            URL url = new URL("http://tmi.twitch.tv/hosts?include_logins=1&host=" + Integer.toString(channel.id));
+            JSONObject json = GetJSON(url);
+
+            if(json != null) {
+                JSONArray hostsArray = json.getJSONArray("hosts");
+
+                if(hostsArray.length() > 0 && hostsArray.getJSONObject(0).length() > 0) {
+                    if(hostsArray.getJSONObject(0).has("target_display_name"))
+                        return hostsArray.getJSONObject(0).getString("target_display_name");
+                }
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     private static Map<URL, JSONObject> cachedJSON;

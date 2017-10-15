@@ -1,5 +1,6 @@
 package com.github.invghost.neostream;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
@@ -14,14 +15,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.Set;
 
-class CheckOnlineTask extends AsyncTask<String, Void, TwitchChannel> {
-    private ChannelAdapter adapter;
+class CheckChannelStatusTask extends AsyncTask<String, Void, TwitchChannel> {
+    private Context context;
+    private ChannelAdapter adapter, hostingAdapter, offlineAdapter;
+    private TextView statusText;
 
-    CheckOnlineTask(ChannelAdapter adapter) {
+    private static int onlineCount = 0, hostingCount = 0, offlineCount = 0;
+
+    public static void resetCounters() {
+        onlineCount = 0;
+        hostingCount = 0;
+        offlineCount = 0;
+    }
+
+    CheckChannelStatusTask(Context context, ChannelAdapter adapter, ChannelAdapter hostingAdapter, ChannelAdapter offlineAdapter, TextView statusText) {
+        this.context = context;
         this.adapter = adapter;
+        this.hostingAdapter = hostingAdapter;
+        this.offlineAdapter = offlineAdapter;
+        this.statusText = statusText;
     }
 
     @Override
@@ -36,8 +52,29 @@ class CheckOnlineTask extends AsyncTask<String, Void, TwitchChannel> {
     protected void onPostExecute(TwitchChannel channel) {
         super.onPostExecute(channel);
 
-        adapter.add(channel);
-        adapter.notifyDataSetChanged();
+        //online
+        if(channel.stream != null && channel.hosting == null) {
+            adapter.add(channel);
+            adapter.notifyDataSetChanged();
+
+            onlineCount++;
+        } else {
+            //hosting
+            if (channel.stream == null && channel.hosting != null) {
+                hostingAdapter.add(channel);
+                hostingAdapter.notifyDataSetChanged();
+
+                hostingCount++;
+            } else {
+                //offline
+                offlineAdapter.add(channel);
+                offlineAdapter.notifyDataSetChanged();
+
+                offlineCount++;
+            }
+        }
+
+        statusText.setText(context.getString(R.string.following_statuses, onlineCount, hostingCount, offlineCount));
     }
 }
 
@@ -54,9 +91,9 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
-        getActivity().setTitle(R.string.app_name);
+        getActivity().setTitle(R.string.home);
 
-        final ListView followedChannelsListView = (ListView)view.findViewById(R.id.following_status_list);
+        final ListView followedChannelsListView = (ListView)view.findViewById(R.id.online_channels);
         followedChannelsListView.setClickable(true);
         followedChannelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -111,16 +148,28 @@ public class HomeFragment extends Fragment {
     }
 
     private void RefreshOnline() {
-        FollowingChannelAdapter adapter = new FollowingChannelAdapter(getContext());
+        CheckChannelStatusTask.resetCounters();
 
-        ListView followedChannelsListView = (ListView)getView().findViewById(R.id.following_status_list);
+        FollowingChannelAdapter adapter = new FollowingChannelAdapter(getContext());
+        FollowingChannelAdapter hostingAdapter = new FollowingChannelAdapter(getContext());
+        FollowingChannelAdapter offlineAdapter = new FollowingChannelAdapter(getContext());
+
+        ListView followedChannelsListView = (ListView)getView().findViewById(R.id.online_channels);
         followedChannelsListView.setAdapter(adapter);
+
+        ListView hostingChannelsListView = (ListView)getView().findViewById(R.id.hosting_channels);
+        hostingChannelsListView.setAdapter(hostingAdapter);
+
+        ListView offlineChannelsListView = (ListView)getView().findViewById(R.id.offline_channels);
+        offlineChannelsListView.setAdapter(offlineAdapter);
+
+        TextView followingStatuses = (TextView)getView().findViewById(R.id.channelStatuses);
 
         SharedPreferences settings = getContext().getSharedPreferences("MyPrefs", 0);
         Set<String> followedStreamers = settings.getStringSet("followed", null);
         if(followedStreamers != null) {
             for (String streamer : followedStreamers) {
-                new CheckOnlineTask(adapter).execute(streamer);
+                new CheckChannelStatusTask(getContext(), adapter, hostingAdapter, offlineAdapter, followingStatuses).execute(streamer);
             }
         }
     }
