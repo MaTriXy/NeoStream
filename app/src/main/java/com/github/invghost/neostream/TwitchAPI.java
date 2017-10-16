@@ -287,9 +287,6 @@ class TwitchAPI {
     }
 
     static ArrayList<String> GetQualities(String username) {
-        if(!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_twitch_api", true))
-            return null;
-
         ArrayList<String> qualities = new ArrayList<>();
 
         try {
@@ -341,9 +338,6 @@ class TwitchAPI {
     }
 
     static String GetStreamURI(String username, String quality) {
-        if(!PreferenceManager.getDefaultSharedPreferences(context).getBoolean("use_twitch_api", true))
-            return null;
-
         try {
             //FIXME: HTTP is bad!
             URL url = new URL("http://usher.twitch.tv/api/channel/hls/" + URLEncoder.encode(username, "UTF-8") + ".m3u8?player=twitchweb&token=" +
