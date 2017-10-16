@@ -2,7 +2,6 @@ package com.github.invghost.neostream;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -17,8 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 class CheckChannelStatusTask extends AsyncTask<String, Void, TwitchChannel> {
     private Context context;
@@ -184,11 +182,7 @@ public class HomeFragment extends Fragment {
 
         TextView followingStatuses = (TextView)getView().findViewById(R.id.channelStatuses);
 
-        SharedPreferences settings = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-        Set<String> followedStreamers = settings.getStringSet("followed", null);
-        if(followedStreamers == null)
-            followedStreamers = new HashSet<>();
-
+        ArrayList<String> followedStreamers = UserData.getFollowing(getContext());
         for (String streamer : followedStreamers) {
             new CheckChannelStatusTask(getContext(), adapter, hostingAdapter, offlineAdapter, followingStatuses).execute(streamer);
         }

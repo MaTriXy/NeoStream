@@ -1,11 +1,11 @@
 package com.github.invghost.neostream;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -20,6 +20,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,10 +30,9 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 
 import static com.github.invghost.neostream.Utility.getColor;
+import static com.github.invghost.neostream.Utility.getDrawable;
 
 class BlurTransformation extends BitmapTransformation {
     private RenderScript rs;
@@ -142,6 +142,8 @@ class RetrieveQualitiesTask extends AsyncTask<String, Void, ArrayList<String>> {
 }
 
 public class ChannelFragment extends Fragment {
+    boolean following = false;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -150,6 +152,8 @@ public class ChannelFragment extends Fragment {
         new RetrieveQualitiesTask(this).execute(getArguments().getString("channel"));
 
         setHasOptionsMenu(true);
+
+        following = UserData.isFollowing(getContext(), getArguments().getString("channel"));
     }
 
     @Override
@@ -169,6 +173,23 @@ public class ChannelFragment extends Fragment {
         tabStrip.setTabIndicatorColor(getColor(getContext(), R.color.tabText));
         tabStrip.setTextColor(getColor(getContext(), R.color.tabText));
 
+        final Button followButton = (Button)view.findViewById(R.id.followButton);
+        if(following)
+            followButton.setBackground(getDrawable(getContext(), R.drawable.ic_favorite_black_24dp));
+
+        followButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(following) {
+                    unfollow();
+                    followButton.setBackground(getDrawable(getContext(), R.drawable.ic_favorite_border_black_24dp));
+                } else {
+                    follow();
+                    followButton.setBackground(getDrawable(getContext(), R.drawable.ic_favorite_black_24dp));
+                }
+            }
+        });
+
         return view;
     }
 
@@ -177,24 +198,30 @@ public class ChannelFragment extends Fragment {
         inflater.inflate(R.menu.menu_channel, menu);
     }
 
+    void follow() {
+        UserData.addFollow(getContext(), getArguments().getString("channel"));
+
+        Toast toast = Toast.makeText(getContext(), getString(R.string.followed_toast, getArguments().getString("channel")), Toast.LENGTH_SHORT);
+        toast.show();
+
+        following = true;
+    }
+
+    void unfollow() {
+        UserData.removeFollow(getContext(), getArguments().getString("channel"));
+
+        Toast toast = Toast.makeText(getContext(), getString(R.string.unfollowed_toast, getArguments().getString("channel")), Toast.LENGTH_SHORT);
+        toast.show();
+
+        following = false;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         if(id == R.id.channelFollow)
         {
-            SharedPreferences settings = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
-            Set<String> followedStreamers = settings.getStringSet("followed", null);
-            if(followedStreamers == null)
-                followedStreamers = new HashSet<>();
 
-            followedStreamers.add(getArguments().getString("channel"));
-
-            SharedPreferences.Editor editor = settings.edit();
-            editor.putStringSet("followed", followedStreamers);
-            editor.apply();
-
-            Toast toast = Toast.makeText(getContext(), getString(R.string.followed_toast, getArguments().getString("channel")), Toast.LENGTH_SHORT);
-            toast.show();
 
             return true;
         }
