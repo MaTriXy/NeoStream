@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 public class PlayerFragment extends Fragment {
     @Override
@@ -21,11 +22,15 @@ public class PlayerFragment extends Fragment {
 
         if(savedInstanceState == null) {
             WebView playerWebView = ((MainActivity) getActivity()).playerWebView;
-            WebView chatWebView = ((MainActivity) getActivity()).chatWebView;
 
-            playerWebView.loadUrl("https://player.twitch.tv/?channel=" + getArguments().getString("channel") + "&allowfullscreen=false");
+            if(getArguments().getBoolean("video"))
+                playerWebView.loadUrl("https://player.twitch.tv/?video=" + getArguments().getString("videoid") + "&allowfullscreen=false");
+            else
+                playerWebView.loadUrl("https://player.twitch.tv/?channel=" + getArguments().getString("channel") + "&allowfullscreen=false");
 
             if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("enable_chat", true)) {
+                WebView chatWebView = ((MainActivity) getActivity()).chatWebView;
+
                 String chatHTML = "<html><body style=\"margin: 0px;\"><iframe frameborder=\"0\"\n" +
                         "        scrolling=\"yes\"\n" +
                         "        src=\"https://www.twitch.tv/" + getArguments().getString("channel") + "/chat?popout=\"\n" +
@@ -47,22 +52,33 @@ public class PlayerFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_player, container, false);
 
         WebView playerWebView = ((MainActivity)getActivity()).playerWebView;
-        WebView chatWebView = ((MainActivity)getActivity()).chatWebView;
 
         FrameLayout playerContainer = (FrameLayout)view.findViewById(R.id.player_container);
-        FrameLayout chatContainer = (FrameLayout)view.findViewById(R.id.chat_container);
 
         if(playerWebView.getParent() != null)
             ((ViewGroup)playerWebView.getParent()).removeView(playerWebView);
 
-        if(chatWebView.getParent() != null)
-            ((ViewGroup)chatWebView.getParent()).removeView(chatWebView);
-
         playerWebView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         playerContainer.addView(playerWebView);
 
-        chatWebView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-        chatContainer.addView(chatWebView);
+        FrameLayout chatContainer = (FrameLayout)view.findViewById(R.id.chat_container);
+        if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("enable_chat", true) && !getArguments().getBoolean("video")) {
+            WebView chatWebView = ((MainActivity)getActivity()).chatWebView;
+
+            if(chatWebView.getParent() != null)
+                ((ViewGroup)chatWebView.getParent()).removeView(chatWebView);
+
+            chatWebView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            chatContainer.addView(chatWebView);
+        } else {
+            View infoView = inflater.inflate(R.layout.fragment_stream_info, container, false);
+
+            infoView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            chatContainer.addView(infoView);
+
+            TextView titleText = (TextView)chatContainer.findViewById(R.id.infoStreamTitle);
+            titleText.setText(getArguments().getString("title"));
+        }
 
         return view;
     }
@@ -116,7 +132,7 @@ public class PlayerFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
 
-        ((MainActivity)getActivity()).playerWebView = null;
-        ((MainActivity)getActivity()).chatWebView = null;
+        ((MainActivity)getActivity()).playerWebView.loadUrl("");
+        ((MainActivity)getActivity()).chatWebView.loadUrl("");
     }
 }

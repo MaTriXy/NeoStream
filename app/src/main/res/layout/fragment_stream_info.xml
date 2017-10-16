@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/mainPlayerLayout"
+    android:background="@color/colorPrimaryDark">
+
+    <TextView
+        android:id="@+id/infoStreamTitle"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        tools:text="Stream Title"
+        android:textSize="25sp"
+        android:layout_margin="5dp"
+        android:textColor="@color/tabText"/>
+
+</RelativeLayout>

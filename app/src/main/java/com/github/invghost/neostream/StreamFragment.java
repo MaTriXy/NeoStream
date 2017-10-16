@@ -92,10 +92,15 @@ public class StreamFragment extends Fragment {
                         PlayerFragment fragment = new PlayerFragment();
 
                         Bundle bundle = new Bundle();
-                        if (channel.hosting != null)
+                        if (channel.hosting != null) {
                             bundle.putString("channel", channel.hosting.username);
-                        else
+                            bundle.putString("title", channel.hosting.status);
+                        } else {
                             bundle.putString("channel", channel.username);
+                            bundle.putString("title", channel.status);
+                        }
+
+                        bundle.putBoolean("video", false);
 
                         fragment.setArguments(bundle);
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();

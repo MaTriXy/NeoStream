@@ -4,6 +4,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +49,24 @@ public class VideosFragment extends Fragment {
 
         ListView videoList = (ListView)view.findViewById(R.id.videoList);
         videoList.setAdapter(adapter);
+
+        videoList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                TwitchVideo video = (TwitchVideo) parent.getItemAtPosition(position);
+
+                PlayerFragment fragment = new PlayerFragment();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("channel", video.username);
+                bundle.putString("title", video.title);
+                bundle.putString("videoid", video.id);
+                bundle.putBoolean("video", true);
+
+                fragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
+            }
+        });
 
         TwitchChannel channel = getArguments().getParcelable("channel");
         new LoadVideosTask(adapter).execute(channel.username);

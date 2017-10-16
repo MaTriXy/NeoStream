@@ -88,7 +88,8 @@ class TwitchChannel implements Parcelable {
 }
 
 class TwitchVideo {
-    String title, game;
+    String id;
+    String title, game, username;
     String thumbnailURL;
 }
 
@@ -472,9 +473,11 @@ class TwitchAPI {
             if(json != null) {
                 for (int i = 0; i < json.getJSONArray("videos").length(); i++) {
                     TwitchVideo video = new TwitchVideo();
+                    video.id = json.getJSONArray("videos").getJSONObject(i).getString("_id");
                     video.title = json.getJSONArray("videos").getJSONObject(i).getString("title");
                     video.game = json.getJSONArray("videos").getJSONObject(i).getString("game");
                     video.thumbnailURL = json.getJSONArray("videos").getJSONObject(i).getString("preview");
+                    video.username = username;
 
                     videos.add(video);
                 }
