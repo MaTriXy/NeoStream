@@ -180,7 +180,7 @@ public class ChannelFragment extends Fragment {
         int id = item.getItemId();
         if(id == R.id.channelFollow)
         {
-            SharedPreferences settings = getActivity().getSharedPreferences("MyPrefs", 0);
+            SharedPreferences settings = getActivity().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
             Set<String> followedStreamers = settings.getStringSet("followed", null);
             if(followedStreamers == null)
                 followedStreamers = new HashSet<>();

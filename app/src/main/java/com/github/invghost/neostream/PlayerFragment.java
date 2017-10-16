@@ -11,8 +11,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
-import android.widget.FrameLayout;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 public class PlayerFragment extends Fragment {
@@ -43,7 +42,8 @@ public class PlayerFragment extends Fragment {
             getActivity().setTitle(getArguments().getString("channel"));
         }
 
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(false);
+        ((MainActivity)getActivity()).getSupportActionBar().hide();
     }
 
     @Nullable
@@ -53,27 +53,27 @@ public class PlayerFragment extends Fragment {
 
         WebView playerWebView = ((MainActivity)getActivity()).playerWebView;
 
-        FrameLayout playerContainer = (FrameLayout)view.findViewById(R.id.player_container);
+        LinearLayout playerContainer = (LinearLayout)view.findViewById(R.id.player_container);
 
         if(playerWebView.getParent() != null)
             ((ViewGroup)playerWebView.getParent()).removeView(playerWebView);
 
-        playerWebView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        playerWebView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         playerContainer.addView(playerWebView);
 
-        FrameLayout chatContainer = (FrameLayout)view.findViewById(R.id.chat_container);
+        LinearLayout chatContainer = (LinearLayout)view.findViewById(R.id.chat_container);
         if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("enable_chat", true) && !getArguments().getBoolean("video")) {
             WebView chatWebView = ((MainActivity)getActivity()).chatWebView;
 
             if(chatWebView.getParent() != null)
                 ((ViewGroup)chatWebView.getParent()).removeView(chatWebView);
 
-            chatWebView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            chatWebView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             chatContainer.addView(chatWebView);
         } else {
             View infoView = inflater.inflate(R.layout.fragment_stream_info, container, false);
 
-            infoView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+            infoView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             chatContainer.addView(infoView);
 
             TextView titleText = (TextView)chatContainer.findViewById(R.id.infoStreamTitle);
@@ -88,43 +88,49 @@ public class PlayerFragment extends Fragment {
         inflater.inflate(R.menu.menu_player, menu);
     }
 
+    static ViewGroup.LayoutParams oldPlayerLayoutParams = null;
+    static ViewGroup.LayoutParams oldChatLayoutParams = null;
+
+    static int oldVisibility = 0;
+
+    private void showSystemUi() {
+        getActivity().getWindow().getDecorView().setSystemUiVisibility(oldVisibility);}
+
+    private void hideSystemUi() {
+        oldVisibility = getActivity().getWindow().getDecorView().getSystemUiVisibility();
+        int visibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                        | View.SYSTEM_UI_FLAG_FULLSCREEN;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) visibility |= View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY;
+        getActivity().getWindow().getDecorView().setSystemUiVisibility(visibility);
+    }
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        WebView playerWebView = ((MainActivity)getActivity()).playerWebView;
-
-        FrameLayout playerContainer = (FrameLayout)getView().findViewById(R.id.player_container);
-        RelativeLayout mainLayout = (RelativeLayout)getView().findViewById(R.id.mainPlayerLayout);
+        LinearLayout playerContainer = (LinearLayout)getView().findViewById(R.id.player_container);
+        LinearLayout chatContainer = (LinearLayout)getView().findViewById(R.id.chat_container);
 
         // Checks the orientation of the screen
         if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            playerContainer.removeView(playerWebView);
+            oldPlayerLayoutParams = playerContainer.getLayoutParams();
+            oldChatLayoutParams = chatContainer.getLayoutParams();
 
-            ((MainActivity) getActivity()).getSupportActionBar().hide();
+            chatContainer.setVisibility(View.GONE);
 
-            getView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION // hide nav bar
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN // hide status bar
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE);
+            playerContainer.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
 
-            playerWebView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
-            mainLayout.addView(playerWebView);
-        } else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
-            mainLayout.removeView(playerWebView);
+            hideSystemUi();
+        } else if(newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            showSystemUi();
 
-            ((MainActivity) getActivity()).getSupportActionBar().show();
+            chatContainer.setVisibility(View.VISIBLE);
 
-            getView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-
-            playerWebView.setLayoutParams(new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
-            playerContainer.addView(playerWebView);
+            playerContainer.setLayoutParams(oldPlayerLayoutParams);
+            chatContainer.setLayoutParams(oldChatLayoutParams);
         }
     }
 
@@ -134,5 +140,7 @@ public class PlayerFragment extends Fragment {
 
         ((MainActivity)getActivity()).playerWebView.loadUrl("");
         ((MainActivity)getActivity()).chatWebView.loadUrl("");
+
+        ((MainActivity)getActivity()).getSupportActionBar().show();
     }
 }

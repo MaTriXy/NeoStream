@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.HashSet;
 import java.util.Set;
 
 class CheckChannelStatusTask extends AsyncTask<String, Void, TwitchChannel> {
@@ -96,9 +97,7 @@ public class HomeFragment extends Fragment {
 
         getActivity().setTitle(R.string.home);
 
-        final ListView followedChannelsListView = (ListView)view.findViewById(R.id.online_channels);
-        followedChannelsListView.setClickable(true);
-        followedChannelsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 TwitchChannel channel = (TwitchChannel)arg0.getItemAtPosition(position);
@@ -111,7 +110,16 @@ public class HomeFragment extends Fragment {
                 fragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_holder, fragment).addToBackStack(null).commit();
             }
-        });
+        };
+
+        final ListView onlineList = (ListView)view.findViewById(R.id.online_channels);
+        onlineList.setOnItemClickListener(listener);
+
+        final ListView hostingList = (ListView)view.findViewById(R.id.hosting_channels);
+        hostingList.setOnItemClickListener(listener);
+
+        final ListView offlineList = (ListView)view.findViewById(R.id.offline_channels);
+        offlineList.setOnItemClickListener(listener);
 
         return view;
     }
@@ -168,12 +176,13 @@ public class HomeFragment extends Fragment {
 
         TextView followingStatuses = (TextView)getView().findViewById(R.id.channelStatuses);
 
-        SharedPreferences settings = getContext().getSharedPreferences("MyPrefs", 0);
+        SharedPreferences settings = getContext().getSharedPreferences("MyPrefs", Context.MODE_PRIVATE);
         Set<String> followedStreamers = settings.getStringSet("followed", null);
-        if(followedStreamers != null) {
-            for (String streamer : followedStreamers) {
-                new CheckChannelStatusTask(getContext(), adapter, hostingAdapter, offlineAdapter, followingStatuses).execute(streamer);
-            }
+        if(followedStreamers == null)
+            followedStreamers = new HashSet<>();
+
+        for (String streamer : followedStreamers) {
+            new CheckChannelStatusTask(getContext(), adapter, hostingAdapter, offlineAdapter, followingStatuses).execute(streamer);
         }
     }
 }
