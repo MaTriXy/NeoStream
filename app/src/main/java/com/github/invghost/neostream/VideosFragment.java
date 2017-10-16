@@ -8,32 +8,37 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.util.ArrayList;
 
 class LoadVideosTask extends AsyncTask<String, Void, ArrayList<TwitchVideo>> {
     private VideoAdapter adapter;
+    private int offset;
 
-    LoadVideosTask(VideoAdapter adapter) {
+    LoadVideosTask(VideoAdapter adapter, int offset) {
         this.adapter = adapter;
+        this.offset = offset;
     }
 
     @Override
     protected ArrayList<TwitchVideo> doInBackground(String... params) {
-        return TwitchAPI.GetVideos(params[0]);
+        return TwitchAPI.GetVideos(params[0], offset);
     }
 
     @Override
     protected void onPostExecute(ArrayList<TwitchVideo> videos) {
         super.onPostExecute(videos);
 
-        adapter.data = videos;
+        adapter.data.addAll(videos);
         adapter.notifyDataSetChanged();
     }
 }
 
 public class VideosFragment extends Fragment {
+    int currentOffset = 0;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +49,7 @@ public class VideosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_videos, container, false);
 
-        VideoAdapter adapter = new VideoAdapter(getContext());
+        final VideoAdapter adapter = new VideoAdapter(getContext());
 
         ListView videoList = (ListView)view.findViewById(R.id.videoList);
         videoList.setAdapter(adapter);
@@ -67,9 +72,23 @@ public class VideosFragment extends Fragment {
             }
         });
 
-        TwitchChannel channel = getArguments().getParcelable("channel");
+        Button loadButton = new Button(getContext());
+        loadButton.setText(getString(R.string.load_more));
+
+        videoList.addFooterView(loadButton);
+
+        final TwitchChannel channel = getArguments().getParcelable("channel");
+
+        loadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View arg0) {
+                currentOffset += 10;
+                new LoadVideosTask(adapter, currentOffset).execute(channel.username);
+            }
+        });
+
         if(channel != null)
-            new LoadVideosTask(adapter).execute(channel.username);
+            new LoadVideosTask(adapter, 0).execute(channel.username);
 
         return view;
     }

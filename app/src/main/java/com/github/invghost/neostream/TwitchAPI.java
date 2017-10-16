@@ -451,11 +451,11 @@ class TwitchAPI {
         return null;
     }
 
-    static ArrayList<TwitchVideo> GetVideos(String username) {
+    static ArrayList<TwitchVideo> GetVideos(String username, int offset) {
         ArrayList<TwitchVideo> videos = new ArrayList<>();
 
         try {
-            URL url = new URL("https://api.twitch.tv/kraken/channels/" + URLEncoder.encode(username, "UTF-8") + "/videos");
+            URL url = new URL("https://api.twitch.tv/kraken/channels/" + URLEncoder.encode(username, "UTF-8") + "/videos?offset=" + Integer.toString(offset));
             JSONObject json = GetJSON(url);
 
             if(json != null) {

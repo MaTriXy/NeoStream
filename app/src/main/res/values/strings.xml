@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">NeoStream</string>
     <string name="home">Home</string>
+
     <string name="header_online">Online Channels</string>
     <string name="header_hosting">Hosting Channels</string>
     <string name="header_offline">Offline Channels</string>
@@ -12,4 +13,6 @@
 
     <string name="followed_toast" formatted="false">Followed %s</string>
     <string name="unfollowed_toast" formatted="false">Unfollowed %s</string>
+
+    <string name="load_more">Load more...</string>
 </resources>
