@@ -18,17 +18,18 @@ import java.util.ArrayList;
 class LoadVideosTask extends AsyncTask<String, Void, ArrayList<TwitchVideo>> {
     private VideoAdapter adapter;
     private int offset;
-    private String filter;
+    private String filter, sort;
 
-    LoadVideosTask(VideoAdapter adapter, String filter, int offset) {
+    LoadVideosTask(VideoAdapter adapter, String filter, String sort, int offset) {
         this.adapter = adapter;
         this.filter = filter;
+        this.sort = sort;
         this.offset = offset;
     }
 
     @Override
     protected ArrayList<TwitchVideo> doInBackground(String... params) {
-        return TwitchAPI.GetVideos(params[0], filter, offset);
+        return TwitchAPI.GetVideos(params[0], filter, sort, offset);
     }
 
     @Override
@@ -42,7 +43,7 @@ class LoadVideosTask extends AsyncTask<String, Void, ArrayList<TwitchVideo>> {
 
 public class VideosFragment extends Fragment {
     int currentOffset = 0;
-    String currentFilter = null;
+    String currentFilter = null, currentSort = null;
     VideoAdapter adapter;
 
     @Override
@@ -79,12 +80,40 @@ public class VideosFragment extends Fragment {
                         break;
                 }
 
-                showVideos(filter);
+                showVideos(filter, currentSort);
             }
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                showVideos(null);
+                showVideos(null, null);
+            }
+        });
+
+        Spinner sortSpinner = (Spinner)view.findViewById(R.id.videoSortSpinner);
+        ArrayAdapter<CharSequence> sortAdapter = ArrayAdapter.createFromResource(getContext(), R.array.video_sorts, android.R.layout.simple_spinner_item);
+
+        sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortSpinner.setAdapter(sortAdapter);
+
+        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sort = null;
+                switch(position) {
+                    case 0:
+                        sort = "time";
+                        break;
+                    case 1:
+                        sort = "views";
+                        break;
+                }
+
+                showVideos(currentFilter, sort);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                showVideos(null, null);
             }
         });
 
@@ -120,25 +149,26 @@ public class VideosFragment extends Fragment {
             @Override
             public void onClick(View arg0) {
                 currentOffset += 10;
-                new LoadVideosTask(adapter, currentFilter, currentOffset).execute(channel.username);
+                new LoadVideosTask(adapter, currentFilter, currentSort, currentOffset).execute(channel.username);
             }
         });
 
-        showVideos(null);
+        showVideos(null, null);
 
         return view;
     }
 
-    void showVideos(String filter) {
+    void showVideos(String filter, String sort) {
         TwitchChannel channel = getArguments().getParcelable("channel");
         if(channel == null || getView() == null)
             return;
 
         currentFilter = filter;
+        currentSort = sort;
 
         adapter.data.clear();
 
-        new LoadVideosTask(adapter, currentFilter, 0).execute(channel.username);
+        new LoadVideosTask(adapter, currentFilter, currentSort, 0).execute(channel.username);
 
         ListView videoList = (ListView)getView().findViewById(R.id.videoList);
         videoList.setSelectionAfterHeaderView();

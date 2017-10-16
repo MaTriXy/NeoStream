@@ -13,14 +13,31 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
-            android:text="Filter"/>
+            android:text="@string/filter"/>
         <Spinner
             android:id="@+id/videoFilterSpinner"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/filterText">
+            android:layout_toRightOf="@+id/filterText"/>
+
+        <TextView
+            android:id="@+id/sortText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:layout_toRightOf="@+id/videoFilterSpinner"
+            android:text="@string/sort"/>
+
+        <Spinner
+            android:id="@+id/videoSortSpinner"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/sortText">
         </Spinner>
     </RelativeLayout>
 

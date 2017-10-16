@@ -15,4 +15,7 @@
     <string name="unfollowed_toast" formatted="false">Unfollowed %s</string>
 
     <string name="load_more">Load more...</string>
+
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
 </resources>
