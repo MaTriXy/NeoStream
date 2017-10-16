@@ -21,7 +21,7 @@ public class PollReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("enable_live_notifications", true)) {
+        if (PreferenceManager.getDefaultSharedPreferences(context).getBoolean("enable_live_notifications", false)) {
             scheduleAlarms(context);
         }
     }

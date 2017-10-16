@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.preference.PreferenceManager;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -16,8 +15,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -483,21 +480,9 @@ class TwitchAPI {
         return videos;
     }
 
-    private static Map<URL, JSONObject> cachedJSON;
-
     private static JSONObject GetJSON(URL url) {
         if(context == null)
             return null;
-
-        boolean useCache = PreferenceManager.getDefaultSharedPreferences(context).getBoolean("enable_api_cache", false);
-
-        if(useCache) {
-            if (cachedJSON == null)
-                cachedJSON = new HashMap<>();
-
-            if (cachedJSON.containsKey(url))
-                return cachedJSON.get(url);
-        }
 
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
@@ -520,12 +505,7 @@ class TwitchAPI {
 
                 br.close();
 
-                JSONObject jsonObj = new JSONObject(inputLine);
-
-                if(useCache)
-                    cachedJSON.put(url, jsonObj);
-
-                return jsonObj;
+                return new JSONObject(inputLine);
             } finally {
                 urlConnection.disconnect();
             }

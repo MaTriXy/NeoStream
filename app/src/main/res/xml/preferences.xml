@@ -5,11 +5,6 @@
 
         <CheckBoxPreference
             android:defaultValue="false"
-            android:key="check_box_preference_2"
-            android:summary="Caches responses to reduce the amount of API requests. Disable if information isn't updating as frequently."
-            android:title="Use API Caching (EXPERIMENTAL)" />
-        <CheckBoxPreference
-            android:defaultValue="false"
             android:key="enable_live_notifications"
             android:summary="Enable notifications when followed channels go live. Disable if you experience high battery consumption."
             android:title="Live Notifications" />

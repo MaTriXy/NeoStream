@@ -55,7 +55,7 @@ class BlurTransformation extends BitmapTransformation {
 
         ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
         script.setInput(input);
-        script.setRadius(30);
+        script.setRadius(15);
         script.forEach(output);
 
         output.copyTo(blurredBitmap);
@@ -94,7 +94,7 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
         if(channel.bannerURL != null)
             Glide.with(fragment.getContext()).load(channel.bannerURL).transform(new BlurTransformation(fragment.getContext())).crossFade().into(imageView);
 
-        imageView.setColorFilter(Color.rgb(123, 123, 123), android.graphics.PorterDuff.Mode.MULTIPLY);
+        imageView.setColorFilter(Color.rgb(100, 100, 100), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         ImageView logoImageView = (ImageView)fragment.getView().findViewById(R.id.channelLogo);
         if(channel.logoURL != null)
@@ -117,7 +117,6 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
         fragment.getActivity().setTitle(channel.displayName);
 
         ViewPager viewPager = (ViewPager)fragment.getView().findViewById(R.id.pager);
-        viewPager.setOffscreenPageLimit(0);
         viewPager.setAdapter(new ChannelTabsAdapter(channel, fragment.getChildFragmentManager()));
     }
 }

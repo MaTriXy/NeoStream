@@ -18,7 +18,10 @@ public class CheckOnlineStatus extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        SharedPreferences settings = getSharedPreferences("MyPrefs", 0);
+        SharedPreferences settings = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        if (!settings.getBoolean("enable_live_notifications", false))
+            return;
+
         Set<String> followedStreamers = settings.getStringSet("followed", null);
         if(followedStreamers != null) {
             for (String streamer : followedStreamers) {
