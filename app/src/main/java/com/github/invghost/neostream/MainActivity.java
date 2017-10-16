@@ -1,5 +1,6 @@
 package com.github.invghost.neostream;
 
+import android.annotation.SuppressLint;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebResourceRequest;
@@ -9,11 +10,12 @@ import android.webkit.WebViewClient;
 public class MainActivity extends AppCompatActivity {
     public WebView playerWebView, chatWebView;
 
+    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         if (savedInstanceState == null) {
             HomeFragment fragment = new HomeFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.fragment_holder, fragment).commit();
