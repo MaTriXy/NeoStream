@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -115,6 +116,27 @@ public class StreamFragment extends Fragment {
 
         ImageView gameCoverView = (ImageView)view.findViewById(R.id.streamGameCover);
         Glide.with(getContext()).load("https://static-cdn.jtvnw.net/ttv-boxart/" + game.replaceAll(" ", "%20") + "-136x190.jpg").crossFade().into(gameCoverView);
+
+        Button shareButton = (Button)view.findViewById(R.id.streamShareButton);
+        shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String username = channel.username;
+                String displayName = channel.displayName;
+
+                if(channel.hosting != null) {
+                    username = channel.hosting.username;
+                    displayName = channel.hosting.displayName;
+                }
+
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TEXT, "https://www.twitch.tv/" + username);
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, displayName + " Twitch stream");
+
+                startActivity(Intent.createChooser(intent, "Share"));
+            }
+        });
 
         return view;
     }
