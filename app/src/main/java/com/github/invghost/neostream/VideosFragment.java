@@ -8,23 +8,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Spinner;
 
 import java.util.ArrayList;
 
 class LoadVideosTask extends AsyncTask<String, Void, ArrayList<TwitchVideo>> {
     private VideoAdapter adapter;
     private int offset;
+    private String filter;
 
-    LoadVideosTask(VideoAdapter adapter, int offset) {
+    LoadVideosTask(VideoAdapter adapter, String filter, int offset) {
         this.adapter = adapter;
+        this.filter = filter;
         this.offset = offset;
     }
 
     @Override
     protected ArrayList<TwitchVideo> doInBackground(String... params) {
-        return TwitchAPI.GetVideos(params[0], offset);
+        return TwitchAPI.GetVideos(params[0], filter, offset);
     }
 
     @Override
@@ -38,6 +42,8 @@ class LoadVideosTask extends AsyncTask<String, Void, ArrayList<TwitchVideo>> {
 
 public class VideosFragment extends Fragment {
     int currentOffset = 0;
+    String currentFilter = null;
+    VideoAdapter adapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -49,7 +55,38 @@ public class VideosFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_videos, container, false);
 
-        final VideoAdapter adapter = new VideoAdapter(getContext());
+        adapter = new VideoAdapter(getContext());
+
+        Spinner filterSpinner = (Spinner)view.findViewById(R.id.videoFilterSpinner);
+        ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(getContext(), R.array.video_types, android.R.layout.simple_spinner_item);
+
+        filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterSpinner.setAdapter(filterAdapter);
+
+        filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String filter = null;
+                switch(position) {
+                    case 1:
+                        filter = "upload";
+                        break;
+                    case 2:
+                        filter = "archive";
+                        break;
+                    case 3:
+                        filter = "highlight";
+                        break;
+                }
+
+                showVideos(filter);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                showVideos(null);
+            }
+        });
 
         ListView videoList = (ListView)view.findViewById(R.id.videoList);
         videoList.setAdapter(adapter);
@@ -83,13 +120,27 @@ public class VideosFragment extends Fragment {
             @Override
             public void onClick(View arg0) {
                 currentOffset += 10;
-                new LoadVideosTask(adapter, currentOffset).execute(channel.username);
+                new LoadVideosTask(adapter, currentFilter, currentOffset).execute(channel.username);
             }
         });
 
-        if(channel != null)
-            new LoadVideosTask(adapter, 0).execute(channel.username);
+        showVideos(null);
 
         return view;
+    }
+
+    void showVideos(String filter) {
+        TwitchChannel channel = getArguments().getParcelable("channel");
+        if(channel == null || getView() == null)
+            return;
+
+        currentFilter = filter;
+
+        adapter.data.clear();
+
+        new LoadVideosTask(adapter, currentFilter, 0).execute(channel.username);
+
+        ListView videoList = (ListView)getView().findViewById(R.id.videoList);
+        videoList.setSelectionAfterHeaderView();
     }
 }
