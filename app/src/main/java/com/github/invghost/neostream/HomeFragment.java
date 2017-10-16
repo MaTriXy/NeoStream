@@ -93,12 +93,17 @@ public class HomeFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getActivity().setTitle(R.string.home);
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        getActivity().setTitle(R.string.home);
 
         AdapterView.OnItemClickListener listener = new AdapterView.OnItemClickListener() {
             @Override

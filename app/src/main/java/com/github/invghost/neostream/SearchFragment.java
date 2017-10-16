@@ -86,12 +86,17 @@ public class SearchFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        getActivity().setTitle("Search");
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_search, container, false);
-
-        getActivity().setTitle("Search");
 
         ((EditText)view.findViewById(R.id.searchEditText)).setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {

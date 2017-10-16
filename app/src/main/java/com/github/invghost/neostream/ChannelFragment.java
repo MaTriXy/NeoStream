@@ -118,6 +118,7 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
             ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText(fragment.getString(R.string.channel_offline));
 
         fragment.getActivity().setTitle(channel.displayName);
+        fragment.displayName = channel.displayName;
 
         ViewPager viewPager = (ViewPager)fragment.getView().findViewById(R.id.pager);
         viewPager.setAdapter(new ChannelTabsAdapter(channel, fragment.getChildFragmentManager()));
@@ -143,6 +144,7 @@ class RetrieveQualitiesTask extends AsyncTask<String, Void, ArrayList<String>> {
 
 public class ChannelFragment extends Fragment {
     boolean following = false;
+    String displayName;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -162,6 +164,8 @@ public class ChannelFragment extends Fragment {
 
         new RetrieveChannelTask(this).execute(getArguments().getString("channel"));
         new RetrieveQualitiesTask(this).execute(getArguments().getString("channel"));
+
+        getActivity().setTitle(displayName);
     }
 
     @Nullable
