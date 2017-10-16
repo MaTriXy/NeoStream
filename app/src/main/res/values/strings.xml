@@ -5,4 +5,11 @@
     <string name="header_hosting">Hosting Channels</string>
     <string name="header_offline">Offline Channels</string>
     <string name="following_statuses" formatted="false">%d online, %d hosting, %d offline.</string>
+    <string name="no_description">This channel has no description.</string>
+    <string name="channel_online" formatted="false">Currently streaming %s for %d viewers</string>
+    <string name="channel_hosting" formatted="false">Currently hosting %s</string>
+    <string name="channel_offline">Currently offline</string>
+
+    <string name="followed_toast" formatted="false">Followed %s</string>
+    <string name="unfollowed_toast" formatted="false">Unfollowed %s</string>
 </resources>

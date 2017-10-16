@@ -25,7 +25,7 @@ public class CheckOnlineStatus extends IntentService {
         Set<String> followedStreamers = settings.getStringSet("followed", null);
         if(followedStreamers != null) {
             for (String streamer : followedStreamers) {
-                if(TwitchAPI.IsOnline(streamer) && TwitchAPI.IsStreamUnique(streamer)) {
+                if(TwitchAPI.IsOnline(streamer) && TwitchAPI.IsStreamUnique(getApplicationContext(), streamer)) {
                     NotificationCompat.Builder mBuilder =
                             new NotificationCompat.Builder(this)
                                     .setSmallIcon(R.drawable.ic_search_black_24dp)

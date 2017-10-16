@@ -53,7 +53,7 @@ public class StreamFragment extends Fragment {
 
         TextView statusText = (TextView)view.findViewById(R.id.streamStatus);
         if(channel.stream == null && channel.hosting == null)
-            statusText.setText("Currently offline.");
+            statusText.setText(getString(R.string.channel_offline));
 
         TextView titleText = (TextView)view.findViewById(R.id.streamTitle);
         if(channel.hosting == null)

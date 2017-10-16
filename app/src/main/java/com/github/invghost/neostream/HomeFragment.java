@@ -27,7 +27,7 @@ class CheckChannelStatusTask extends AsyncTask<String, Void, TwitchChannel> {
 
     private static int onlineCount = 0, hostingCount = 0, offlineCount = 0;
 
-    public static void resetCounters() {
+    static void resetCounters() {
         onlineCount = 0;
         hostingCount = 0;
         offlineCount = 0;
@@ -44,10 +44,12 @@ class CheckChannelStatusTask extends AsyncTask<String, Void, TwitchChannel> {
     @Override
     protected TwitchChannel doInBackground(String... params) {
         TwitchChannel channel = TwitchAPI.GetChannel(params[0]);
-        channel.stream = TwitchAPI.GetStream(params[0]); //TODO: this is bad, why why why are we doing this!
+        if(channel != null) {
+            channel.stream = TwitchAPI.GetStream(params[0]); //TODO: this is bad, why why why are we doing this!
 
-        if(channel.hosting != null)
-            channel.hosting.stream = TwitchAPI.GetStream(channel.hosting.username);
+            if (channel.hosting != null)
+                channel.hosting.stream = TwitchAPI.GetStream(channel.hosting.username);
+        }
 
         return channel;
     }
@@ -55,6 +57,9 @@ class CheckChannelStatusTask extends AsyncTask<String, Void, TwitchChannel> {
     @Override
     protected void onPostExecute(TwitchChannel channel) {
         super.onPostExecute(channel);
+
+        if(channel == null)
+            return;
 
         //online
         if(channel.stream != null && channel.hosting == null) {
@@ -159,6 +164,9 @@ public class HomeFragment extends Fragment {
     }
 
     private void RefreshOnline() {
+        if(getView() == null)
+            return;
+
         CheckChannelStatusTask.resetCounters();
 
         FollowingChannelAdapter adapter = new FollowingChannelAdapter(getContext());

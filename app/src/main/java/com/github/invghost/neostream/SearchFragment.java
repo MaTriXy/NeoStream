@@ -120,8 +120,11 @@ public class SearchFragment extends Fragment {
     }
 
     void search() {
+        if(getView() == null)
+            return;
+
         String query = ((EditText)getView().findViewById(R.id.searchEditText)).getText().toString();
-        if(query == null || query.length() <= 1)
+        if(query.length() <= 1)
             return;
 
         switch (filter) {

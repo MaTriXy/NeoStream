@@ -111,6 +111,9 @@ public class PlayerFragment extends Fragment {
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
+        if(getView() == null)
+            return;
+
         LinearLayout playerContainer = (LinearLayout)getView().findViewById(R.id.player_container);
         LinearLayout chatContainer = (LinearLayout)getView().findViewById(R.id.chat_container);
 

@@ -91,9 +91,6 @@ class TwitchVideo {
 }
 
 class TwitchAPI {
-    //FIXME: don't make this static
-    static Context context;
-
     static TwitchChannel GetChannel(String username) {
         try {
             URL url = new URL("https://api.twitch.tv/kraken/channels/" + URLEncoder.encode(username, "UTF-8"));
@@ -109,7 +106,7 @@ class TwitchAPI {
         return null;
     }
 
-    static TwitchChannel GetChannel(JSONObject channelObject) {
+    private static TwitchChannel GetChannel(JSONObject channelObject) {
         TwitchChannel channel = new TwitchChannel();
 
         try {
@@ -162,7 +159,7 @@ class TwitchAPI {
         return null;
     }
 
-    static TwitchStream GetStream(JSONObject streamObject) {
+    private static TwitchStream GetStream(JSONObject streamObject) {
         TwitchStream stream = new TwitchStream();
 
         try {
@@ -196,7 +193,7 @@ class TwitchAPI {
      See if the channel is actually streaming something new,
      currently only used by live notifications.
      */
-    static boolean IsStreamUnique(String username) {
+    static boolean IsStreamUnique(Context context, String username) {
         SharedPreferences statuses = context.getSharedPreferences("CachedStatuses", 0);
         SharedPreferences games = context.getSharedPreferences("CachedGames", 0);
 
@@ -216,8 +213,8 @@ class TwitchAPI {
             statusesEditor.putString(username, newStatus);
             gamesEditor.putString(username, newGame);
 
-            statusesEditor.commit();
-            gamesEditor.commit();
+            statusesEditor.apply();
+            gamesEditor.apply();
         }
 
         return isUnique;
@@ -434,7 +431,7 @@ class TwitchAPI {
         return results;
     }
 
-    static String CheckIfHosting(TwitchChannel channel) {
+    private static String CheckIfHosting(TwitchChannel channel) {
         try {
             URL url = new URL("http://tmi.twitch.tv/hosts?include_logins=1&host=" + Integer.toString(channel.id));
             JSONObject json = GetJSON(url);
@@ -481,9 +478,6 @@ class TwitchAPI {
     }
 
     private static JSONObject GetJSON(URL url) {
-        if(context == null)
-            return null;
-
         try {
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Accept", "application/json");

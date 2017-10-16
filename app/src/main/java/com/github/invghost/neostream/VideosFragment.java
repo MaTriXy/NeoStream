@@ -4,7 +4,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,7 +68,8 @@ public class VideosFragment extends Fragment {
         });
 
         TwitchChannel channel = getArguments().getParcelable("channel");
-        new LoadVideosTask(adapter).execute(channel.username);
+        if(channel != null)
+            new LoadVideosTask(adapter).execute(channel.username);
 
         return view;
     }

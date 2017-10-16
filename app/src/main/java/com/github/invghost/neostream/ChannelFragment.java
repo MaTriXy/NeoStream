@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.github.invghost.neostream.Utility.getColor;
+
 class BlurTransformation extends BitmapTransformation {
     private RenderScript rs;
 
@@ -80,13 +82,14 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
 
     protected TwitchChannel doInBackground(String... urls) {
         TwitchChannel channel = TwitchAPI.GetChannel(urls[0]);
-        channel.stream = TwitchAPI.GetStream(urls[0]);
+        if(channel != null)
+            channel.stream = TwitchAPI.GetStream(urls[0]);
 
         return channel;
     }
 
     protected void onPostExecute(TwitchChannel channel) {
-        if(fragment == null || fragment.getView() == null)
+        if(fragment == null || fragment.getView() == null || channel == null)
             return;
 
         ImageView imageView = (ImageView)fragment.getView().findViewById(R.id.channelBanner);
@@ -103,16 +106,16 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
         if(channel.description != null)
             ((TextView)fragment.getView().findViewById(R.id.channelDescription)).setText(channel.description);
         else
-            ((TextView)fragment.getView().findViewById(R.id.channelDescription)).setText("This channel has no description.");
+            ((TextView)fragment.getView().findViewById(R.id.channelDescription)).setText(fragment.getString(R.string.no_description));
 
         ((TextView)fragment.getView().findViewById(R.id.channelTitle)).setText(channel.displayName);
 
         if(channel.stream != null)
-            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText("Currently streaming " + channel.game + " for " + channel.stream.viewers + " viewers");
+            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText(fragment.getString(R.string.channel_online, channel.game, channel.stream.viewers));
         else if(channel.hosting != null)
-            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText("Currently hosting " + channel.hosting.displayName);
+            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText(fragment.getString(R.string.channel_hosting, channel.hosting.displayName));
         else
-            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText("Currently offline");
+            ((TextView)fragment.getView().findViewById(R.id.channelStatus)).setText(fragment.getString(R.string.channel_offline));
 
         fragment.getActivity().setTitle(channel.displayName);
 
@@ -163,8 +166,8 @@ public class ChannelFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_channel, container, false);
 
         PagerTabStrip tabStrip = (PagerTabStrip)view.findViewById(R.id.tabStrip);
-        tabStrip.setTabIndicatorColor(getResources().getColor(R.color.tabText));
-        tabStrip.setTextColor(getResources().getColor(R.color.tabText));
+        tabStrip.setTabIndicatorColor(getColor(getContext(), R.color.tabText));
+        tabStrip.setTextColor(getColor(getContext(), R.color.tabText));
 
         return view;
     }
@@ -190,11 +193,7 @@ public class ChannelFragment extends Fragment {
             editor.putStringSet("followed", followedStreamers);
             editor.apply();
 
-            Context context = getContext();
-            CharSequence text = "Followed " + getArguments().getString("channel");
-            int duration = Toast.LENGTH_SHORT;
-
-            Toast toast = Toast.makeText(context, text, duration);
+            Toast toast = Toast.makeText(getContext(), getString(R.string.followed_toast, getArguments().getString("channel")), Toast.LENGTH_SHORT);
             toast.show();
 
             return true;
