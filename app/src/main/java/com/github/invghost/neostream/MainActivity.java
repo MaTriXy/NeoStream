@@ -33,6 +33,8 @@ public class MainActivity extends AppCompatActivity {
                 public void onPageFinished(WebView view, String url) {
                     view.loadUrl("javascript:(function(){" +
                             "document.getElementsByClassName('player-button--twitch')[0].style.visibility='collapse';" +
+                            "document.getElementsByClassName('player-button--twitch')[0].style.display='none';" +
+                            "document.getElementsByClassName('qa-fullscreen-button')[0].style.display='none';" +
                             "document.getElementsByClassName('player-buttons-right')[0].style = 'padding-right: 1.3em !important';" +
                             "})()");
                 }
