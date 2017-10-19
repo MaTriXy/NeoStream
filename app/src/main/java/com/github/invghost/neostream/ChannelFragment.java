@@ -5,14 +5,13 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -173,9 +172,10 @@ public class ChannelFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_channel, container, false);
 
-        PagerTabStrip tabStrip = (PagerTabStrip)view.findViewById(R.id.tabStrip);
-        tabStrip.setTabIndicatorColor(getColor(getContext(), R.color.tabText));
-        tabStrip.setTextColor(getColor(getContext(), R.color.tabText));
+        TabLayout tabStrip = (TabLayout)view.findViewById(R.id.channelTabLayout);
+        tabStrip.setSelectedTabIndicatorColor(getColor(getContext(), R.color.tabText));
+        tabStrip.setTabTextColors(getColor(getContext(), R.color.tabText), getColor(getContext(), R.color.tabText));
+        tabStrip.setupWithViewPager((ViewPager)view.findViewById(R.id.pager));
 
         final Button followButton = (Button)view.findViewById(R.id.followButton);
         if(following)
