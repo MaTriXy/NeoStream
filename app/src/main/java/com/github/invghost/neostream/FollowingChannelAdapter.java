@@ -34,7 +34,7 @@ class FollowingChannelAdapter extends ChannelAdapter {
             channelText.setText(data.get(position).displayName);
 
             TextView viewsText = (TextView)vi.findViewById(R.id.lblViewers);
-            viewsText.setText(String.valueOf(data.get(position).stream.viewers));
+            viewsText.setText(Utility.formatNumber(data.get(position).stream.viewers));
 
             ImageView imageView = (ImageView)vi.findViewById(R.id.imgThumbnail);
 
@@ -52,7 +52,7 @@ class FollowingChannelAdapter extends ChannelAdapter {
             channelText.setText(data.get(position).displayName + " hosting " + data.get(position).hosting.displayName);
 
             TextView viewsText = (TextView)vi.findViewById(R.id.lblViewers);
-            viewsText.setText(String.valueOf(data.get(position).hosting.stream.viewers));
+            viewsText.setText(Utility.formatNumber(data.get(position).hosting.stream.viewers));
 
             ImageView imageView = (ImageView)vi.findViewById(R.id.imgThumbnail);
 

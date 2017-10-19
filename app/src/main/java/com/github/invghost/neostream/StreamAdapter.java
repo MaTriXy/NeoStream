@@ -55,7 +55,7 @@ class StreamAdapter extends BaseAdapter {
         channelText.setText(data.get(position).channel.displayName);
 
         TextView viewsText = (TextView)vi.findViewById(R.id.lblViewers);
-        viewsText.setText(String.valueOf(data.get(position).viewers));
+        viewsText.setText(Utility.formatNumber(data.get(position).viewers));
 
         ImageView imageView = (ImageView)vi.findViewById(R.id.imgThumbnail);
 
