@@ -32,7 +32,7 @@
     <PreferenceCategory android:title="Other">
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="enable_chat"
             android:summary="Shows the chat at the bottom of the screen if using the HTML5 player."
             android:title="Enable Chat" />
