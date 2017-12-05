@@ -44,7 +44,7 @@ class StreamAdapter extends BaseAdapter {
         View vi = convertView;
 
         if (vi == null)
-            vi = inflater.inflate(R.layout.list_item_stream, null);
+            vi = inflater.inflate(R.layout.list_item_stream, parent, false);
 
         TextView titleText = vi.findViewById(R.id.lblTitle);
         titleText.setText(data.get(position).channel.status);

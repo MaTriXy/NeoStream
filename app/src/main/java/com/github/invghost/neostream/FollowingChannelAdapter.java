@@ -23,7 +23,7 @@ class FollowingChannelAdapter extends ChannelAdapter {
 
         //TODO: this is a LOT of duplicate code :/
         if (isOnline) {
-            vi = inflater.inflate(R.layout.list_item_stream, null);
+            vi = inflater.inflate(R.layout.list_item_stream, parent, false);
 
             TextView titleText = vi.findViewById(R.id.lblTitle);
             titleText.setText(data.get(position).status);
@@ -41,7 +41,7 @@ class FollowingChannelAdapter extends ChannelAdapter {
 
             Glide.with(context).load(data.get(position).stream.thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
         } else if(isHosting) {
-            vi = inflater.inflate(R.layout.list_item_stream, null);
+            vi = inflater.inflate(R.layout.list_item_stream, parent, false);
 
             TextView titleText = vi.findViewById(R.id.lblTitle);
             titleText.setText(data.get(position).hosting.status);
@@ -59,7 +59,7 @@ class FollowingChannelAdapter extends ChannelAdapter {
 
             Glide.with(context).load(data.get(position).hosting.stream.thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
         } else {
-            vi = inflater.inflate(R.layout.list_item_channel, null);
+            vi = inflater.inflate(R.layout.list_item_channel, parent, false);
 
             TextView channelText = vi.findViewById(R.id.lblChannel);
             channelText.setText(data.get(position).displayName);

@@ -148,8 +148,10 @@ public class VideosFragment extends Fragment {
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                currentOffset += 10;
-                new LoadVideosTask(adapter, currentFilter, currentSort, currentOffset).execute(channel.username);
+                if(channel != null) {
+                    currentOffset += 10;
+                    new LoadVideosTask(adapter, currentFilter, currentSort, currentOffset).execute(channel.username);
+                }
             }
         });
 

@@ -44,7 +44,7 @@ class VideoAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final View vi = inflater.inflate(R.layout.list_item_video, null);
+        final View vi = inflater.inflate(R.layout.list_item_video, parent, false);
 
         TextView channelText = vi.findViewById(R.id.streamTitle);
         channelText.setText(data.get(position).title);

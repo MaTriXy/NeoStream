@@ -47,7 +47,7 @@ class ChannelAdapter extends BaseAdapter {
         View vi = convertView;
 
         if (vi == null)
-            vi = inflater.inflate(R.layout.list_item_channel, null);
+            vi = inflater.inflate(R.layout.list_item_channel, parent, false);
 
         TextView channelText = vi.findViewById(R.id.lblChannel);
         channelText.setText(data.get(position).displayName);
