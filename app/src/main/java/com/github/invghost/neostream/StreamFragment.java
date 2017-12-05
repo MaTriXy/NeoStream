@@ -51,6 +51,11 @@ public class StreamFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stream, container, false);
 
+        if(channel.hosting == null)
+            view.findViewById(R.id.host_alert).setVisibility(View.INVISIBLE);
+        else
+            ((TextView)view.findViewById(R.id.host_alert_message)).setText(getContext().getString(R.string.host_alert, channel.displayName, channel.hosting.displayName));
+
         TextView statusText = (TextView)view.findViewById(R.id.streamStatus);
         if(channel.stream == null && channel.hosting == null)
             statusText.setText(getString(R.string.channel_offline));
