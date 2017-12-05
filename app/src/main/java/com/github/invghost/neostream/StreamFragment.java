@@ -52,7 +52,7 @@ public class StreamFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_stream, container, false);
 
         if(channel.hosting == null)
-            view.findViewById(R.id.host_alert).setVisibility(View.INVISIBLE);
+            view.findViewById(R.id.host_alert).setVisibility(View.GONE);
         else
             ((TextView)view.findViewById(R.id.host_alert_message)).setText(getContext().getString(R.string.host_alert, channel.displayName, channel.hosting.displayName));
 
