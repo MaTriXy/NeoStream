@@ -53,7 +53,7 @@ public class PlayerFragment extends Fragment {
 
         WebView playerWebView = ((MainActivity)getActivity()).playerWebView;
 
-        LinearLayout playerContainer = (LinearLayout)view.findViewById(R.id.player_container);
+        LinearLayout playerContainer = view.findViewById(R.id.player_container);
 
         if(playerWebView.getParent() != null)
             ((ViewGroup)playerWebView.getParent()).removeView(playerWebView);
@@ -61,7 +61,7 @@ public class PlayerFragment extends Fragment {
         playerWebView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
         playerContainer.addView(playerWebView);
 
-        LinearLayout chatContainer = (LinearLayout)view.findViewById(R.id.chat_container);
+        LinearLayout chatContainer = view.findViewById(R.id.chat_container);
         if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("enable_chat", true) && !getArguments().getBoolean("video")) {
             WebView chatWebView = ((MainActivity)getActivity()).chatWebView;
 
@@ -76,7 +76,7 @@ public class PlayerFragment extends Fragment {
             infoView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT));
             chatContainer.addView(infoView);
 
-            TextView titleText = (TextView)chatContainer.findViewById(R.id.infoStreamTitle);
+            TextView titleText = chatContainer.findViewById(R.id.infoStreamTitle);
             titleText.setText(getArguments().getString("title"));
         }
 
@@ -114,8 +114,8 @@ public class PlayerFragment extends Fragment {
         if(getView() == null)
             return;
 
-        LinearLayout playerContainer = (LinearLayout)getView().findViewById(R.id.player_container);
-        LinearLayout chatContainer = (LinearLayout)getView().findViewById(R.id.chat_container);
+        LinearLayout playerContainer = getView().findViewById(R.id.player_container);
+        LinearLayout chatContainer = getView().findViewById(R.id.chat_container);
 
         // Checks the orientation of the screen
         if(newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {

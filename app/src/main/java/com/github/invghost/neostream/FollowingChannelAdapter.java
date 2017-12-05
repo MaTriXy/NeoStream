@@ -24,46 +24,46 @@ class FollowingChannelAdapter extends ChannelAdapter {
         if (isOnline) {
             vi = inflater.inflate(R.layout.list_item_stream, null);
 
-            TextView titleText = (TextView)vi.findViewById(R.id.lblTitle);
+            TextView titleText = vi.findViewById(R.id.lblTitle);
             titleText.setText(data.get(position).status);
 
-            TextView gameText = (TextView)vi.findViewById(R.id.lblGame);
+            TextView gameText = vi.findViewById(R.id.lblGame);
             gameText.setText(data.get(position).game);
 
-            TextView channelText = (TextView)vi.findViewById(R.id.lblChannel);
+            TextView channelText = vi.findViewById(R.id.lblChannel);
             channelText.setText(data.get(position).displayName);
 
-            TextView viewsText = (TextView)vi.findViewById(R.id.lblViewers);
+            TextView viewsText = vi.findViewById(R.id.lblViewers);
             viewsText.setText(Utility.formatNumber(data.get(position).stream.viewers));
 
-            ImageView imageView = (ImageView)vi.findViewById(R.id.imgThumbnail);
+            ImageView imageView = vi.findViewById(R.id.imgThumbnail);
 
             Glide.with(context).load(data.get(position).stream.thumbnailURL).into(imageView);
         } else if(isHosting) {
             vi = inflater.inflate(R.layout.list_item_stream, null);
 
-            TextView titleText = (TextView)vi.findViewById(R.id.lblTitle);
+            TextView titleText = vi.findViewById(R.id.lblTitle);
             titleText.setText(data.get(position).hosting.status);
 
-            TextView gameText = (TextView)vi.findViewById(R.id.lblGame);
+            TextView gameText = vi.findViewById(R.id.lblGame);
             gameText.setText(data.get(position).hosting.game);
 
-            TextView channelText = (TextView)vi.findViewById(R.id.lblChannel);
-            channelText.setText(data.get(position).displayName + " hosting " + data.get(position).hosting.displayName);
+            TextView channelText =  vi.findViewById(R.id.lblChannel);
+            channelText.setText(context.getString(R.string.host_alert, data.get(position).displayName, data.get(position).hosting.displayName));
 
-            TextView viewsText = (TextView)vi.findViewById(R.id.lblViewers);
+            TextView viewsText = vi.findViewById(R.id.lblViewers);
             viewsText.setText(Utility.formatNumber(data.get(position).hosting.stream.viewers));
 
-            ImageView imageView = (ImageView)vi.findViewById(R.id.imgThumbnail);
+            ImageView imageView = vi.findViewById(R.id.imgThumbnail);
 
             Glide.with(context).load(data.get(position).hosting.stream.thumbnailURL).into(imageView);
         } else {
             vi = inflater.inflate(R.layout.list_item_channel, null);
 
-            TextView channelText = (TextView)vi.findViewById(R.id.lblChannel);
+            TextView channelText = vi.findViewById(R.id.lblChannel);
             channelText.setText(data.get(position).displayName);
 
-            ImageView imageView = (ImageView)vi.findViewById(R.id.imgIcon);
+            ImageView imageView = vi.findViewById(R.id.imgIcon);
 
             String url = data.get(position).logoURL;
             if(url == null)

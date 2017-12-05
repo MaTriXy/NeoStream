@@ -150,7 +150,7 @@ public class SearchFragment extends Fragment {
             item.setChecked(true);
         }
 
-        ListView searchResultList = (ListView) view.findViewById(R.id.searchResultList);
+        ListView searchResultList = view.findViewById(R.id.searchResultList);
 
         switch(filter) {
             case CHANNEL:

@@ -56,17 +56,17 @@ public class StreamFragment extends Fragment {
         else
             ((TextView)view.findViewById(R.id.host_alert_message)).setText(getContext().getString(R.string.host_alert, channel.displayName, channel.hosting.displayName));
 
-        TextView statusText = (TextView)view.findViewById(R.id.streamStatus);
+        TextView statusText = view.findViewById(R.id.streamStatus);
         if(channel.stream == null && channel.hosting == null)
             statusText.setText(getString(R.string.channel_offline));
 
-        TextView titleText = (TextView)view.findViewById(R.id.streamTitle);
+        TextView titleText = view.findViewById(R.id.streamTitle);
         if(channel.hosting == null)
             titleText.setText(channel.status);
         else
             titleText.setText(channel.hosting.status);
 
-        TextView gameText = (TextView)view.findViewById(R.id.gameTitle);
+        TextView gameText = view.findViewById(R.id.gameTitle);
         if(channel.hosting == null)
             gameText.setText(channel.game);
         else
@@ -77,11 +77,11 @@ public class StreamFragment extends Fragment {
             username = channel.hosting.username;
 
         if(channel.hosting == null && channel.stream == null) {
-            ImageView playButton = (ImageView)view.findViewById(R.id.streamPlayButton);
+            ImageView playButton = view.findViewById(R.id.streamPlayButton);
             playButton.setBackground(null);
         }
 
-        ImageView imageView = (ImageView)view.findViewById(R.id.streamThumbnail);
+        ImageView imageView = view.findViewById(R.id.streamThumbnail);
         Glide.with(getContext()).load("https://static-cdn.jtvnw.net/previews-ttv/live_user_" + username + "-1280x720.jpg").crossFade().into(imageView);
 
         imageView.setColorFilter(Color.rgb(123, 123, 123), android.graphics.PorterDuff.Mode.MULTIPLY);
@@ -119,10 +119,10 @@ public class StreamFragment extends Fragment {
         if(channel.hosting != null)
             game = channel.hosting.game;
 
-        ImageView gameCoverView = (ImageView)view.findViewById(R.id.streamGameCover);
+        ImageView gameCoverView = view.findViewById(R.id.streamGameCover);
         Glide.with(getContext()).load("https://static-cdn.jtvnw.net/ttv-boxart/" + game.replaceAll(" ", "%20") + "-136x190.jpg").crossFade().into(gameCoverView);
 
-        Button shareButton = (Button)view.findViewById(R.id.streamShareButton);
+        Button shareButton = view.findViewById(R.id.streamShareButton);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

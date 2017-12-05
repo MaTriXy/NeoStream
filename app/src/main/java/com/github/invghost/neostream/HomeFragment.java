@@ -120,13 +120,13 @@ public class HomeFragment extends Fragment {
             }
         };
 
-        final ListView onlineList = (ListView)view.findViewById(R.id.online_channels);
+        final ListView onlineList = view.findViewById(R.id.online_channels);
         onlineList.setOnItemClickListener(listener);
 
-        final ListView hostingList = (ListView)view.findViewById(R.id.hosting_channels);
+        final ListView hostingList = view.findViewById(R.id.hosting_channels);
         hostingList.setOnItemClickListener(listener);
 
-        final ListView offlineList = (ListView)view.findViewById(R.id.offline_channels);
+        final ListView offlineList = view.findViewById(R.id.offline_channels);
         offlineList.setOnItemClickListener(listener);
 
         return view;
@@ -176,16 +176,16 @@ public class HomeFragment extends Fragment {
         FollowingChannelAdapter hostingAdapter = new FollowingChannelAdapter(getContext());
         FollowingChannelAdapter offlineAdapter = new FollowingChannelAdapter(getContext());
 
-        ListView followedChannelsListView = (ListView)getView().findViewById(R.id.online_channels);
+        ListView followedChannelsListView = getView().findViewById(R.id.online_channels);
         followedChannelsListView.setAdapter(adapter);
 
-        ListView hostingChannelsListView = (ListView)getView().findViewById(R.id.hosting_channels);
+        ListView hostingChannelsListView = getView().findViewById(R.id.hosting_channels);
         hostingChannelsListView.setAdapter(hostingAdapter);
 
-        ListView offlineChannelsListView = (ListView)getView().findViewById(R.id.offline_channels);
+        ListView offlineChannelsListView = getView().findViewById(R.id.offline_channels);
         offlineChannelsListView.setAdapter(offlineAdapter);
 
-        TextView followingStatuses = (TextView)getView().findViewById(R.id.channelStatuses);
+        TextView followingStatuses = getView().findViewById(R.id.channelStatuses);
 
         ArrayList<String> followedStreamers = UserData.getFollowing(getContext());
         for (String streamer : followedStreamers) {
