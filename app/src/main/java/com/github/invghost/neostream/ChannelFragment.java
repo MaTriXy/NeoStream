@@ -131,8 +131,6 @@ public class ChannelFragment extends Fragment {
 
         new RetrieveChannelTask(this).execute(getArguments().getString("channel"));
 
-        setHasOptionsMenu(true);
-
         following = UserData.isFollowing(getContext(), getArguments().getString("channel"));
     }
 
@@ -173,11 +171,6 @@ public class ChannelFragment extends Fragment {
         });
 
         return view;
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_channel, menu);
     }
 
     void follow() {
