@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 class FollowingChannelAdapter extends ChannelAdapter {
     FollowingChannelAdapter(Context context) {
@@ -38,7 +39,7 @@ class FollowingChannelAdapter extends ChannelAdapter {
 
             ImageView imageView = vi.findViewById(R.id.imgThumbnail);
 
-            Glide.with(context).load(data.get(position).stream.thumbnailURL).into(imageView);
+            Glide.with(context).load(data.get(position).stream.thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
         } else if(isHosting) {
             vi = inflater.inflate(R.layout.list_item_stream, null);
 
@@ -56,7 +57,7 @@ class FollowingChannelAdapter extends ChannelAdapter {
 
             ImageView imageView = vi.findViewById(R.id.imgThumbnail);
 
-            Glide.with(context).load(data.get(position).hosting.stream.thumbnailURL).into(imageView);
+            Glide.with(context).load(data.get(position).hosting.stream.thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
         } else {
             vi = inflater.inflate(R.layout.list_item_channel, null);
 

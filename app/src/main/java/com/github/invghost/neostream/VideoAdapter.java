@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -53,7 +54,7 @@ class VideoAdapter extends BaseAdapter {
             gameText.setText(data.get(position).game);
 
         ImageView thumbnailView = vi.findViewById(R.id.streamThumbnail);
-        Glide.with(context).load(data.get(position).thumbnailURL).crossFade().into(thumbnailView);
+        Glide.with(context).load(data.get(position).thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).crossFade().into(thumbnailView);
         thumbnailView.setColorFilter(Color.rgb(123, 123, 123), android.graphics.PorterDuff.Mode.MULTIPLY);
 
         ImageView gameCoverView = vi.findViewById(R.id.streamGameCover);

@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -59,7 +60,7 @@ class StreamAdapter extends BaseAdapter {
 
         ImageView imageView = vi.findViewById(R.id.imgThumbnail);
 
-        Glide.with(context).load(data.get(position).thumbnailURL).into(imageView);
+        Glide.with(context).load(data.get(position).thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
 
         return vi;
     }
