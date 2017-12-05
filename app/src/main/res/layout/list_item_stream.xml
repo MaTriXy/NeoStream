@@ -40,9 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:ellipsize="marquee"
         android:gravity="bottom|left"
-        android:lines="1"
         android:marqueeRepeatLimit="marquee_forever"
         android:maxLines="1"
         android:minWidth="72dp"
@@ -50,7 +48,8 @@
         android:textSize="14sp"
         tools:text="Streamer name"
         android:layout_alignParentTop="true"
-        android:layout_toEndOf="@+id/imgChannel" />
+        android:layout_toEndOf="@+id/imgChannel"
+        android:singleLine="true" />
 
     <ImageView
         android:id="@+id/imgGame"
@@ -65,15 +64,14 @@
         android:id="@+id/lblGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="marquee"
-        android:lines="1"
         android:maxLines="1"
         android:scrollHorizontally="true"
         android:textSize="14sp"
         tools:text="Ratchet and Clank"
         android:layout_below="@+id/lblTitle"
         android:layout_toEndOf="@+id/imgChannel"
-        android:layout_marginTop="2dp"/>
+        android:layout_marginTop="2dp"
+        android:singleLine="true" />
 
     <ImageView
         android:id="@+id/imgViewers"
