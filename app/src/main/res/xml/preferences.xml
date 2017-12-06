@@ -16,16 +16,8 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_external_player"
-            android:summary="Use a installed video player instead of the HTML5 player."
+            android:summary="Use another video player instead of the HTML5 player."
             android:title="Use external video player" />
-        <ListPreference
-            android:defaultValue="1"
-            android:dependency="use_external_player"
-            android:entries="@array/qualities"
-            android:entryValues="@array/qualities"
-            android:key="preferred_quality"
-            android:summary="Only applies to external video player"
-            android:title="Default Quality" />
 
     </PreferenceCategory>
 

@@ -91,8 +91,6 @@ public class StreamFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("use_external_player", true)) {
-                        //String quality = ((Spinner) view.findViewById(R.id.qualitySpinner)).getSelectedItem().toString();
-
                         String username;
                         if (channel.hosting != null) {
                             username = channel.hosting.username;
