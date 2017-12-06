@@ -93,7 +93,14 @@ public class StreamFragment extends Fragment {
                     if (PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("use_external_player", true)) {
                         //String quality = ((Spinner) view.findViewById(R.id.qualitySpinner)).getSelectedItem().toString();
 
-                        new PlayStreamTask(getActivity()).execute(channel.username, "chunked");
+                        String username;
+                        if (channel.hosting != null) {
+                            username = channel.hosting.username;
+                        } else {
+                            username = channel.username;
+                        }
+
+                        new PlayStreamTask(getActivity()).execute(username, "chunked");
                     } else {
                         PlayerFragment fragment = new PlayerFragment();
 
