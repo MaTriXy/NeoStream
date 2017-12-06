@@ -46,22 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         if(chatWebView == null) {
             chatWebView = new WebView(this);
-            chatWebView.setWebViewClient(new WebViewClient(){
-                @Override
-                public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                    return true;
-                }
-
-                @Override
-                public void onPageFinished(WebView view, String url) {
-                    view.loadUrl("javascript:(function(){" +
-                            "document.getElementsByClassName('textarea-contain')[0].style.visibility='collapse';" +
-                            "document.getElementsByClassName('js-chat-messages')[0].style = 'height: 55px !important';" +
-                            "})()");
-                }
-            });
             chatWebView.getSettings().setJavaScriptEnabled(true);
-            //chatWebView.getSettings().setUserAgentString("Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/42.0.2311.90 Safari/537.36");
+            chatWebView.getSettings().setUserAgentString("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
         }
 
         PollReceiver.scheduleAlarms(this);

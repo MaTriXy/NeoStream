@@ -37,5 +37,11 @@
             android:summary="Shows the chat at the bottom of the screen if using the HTML5 player."
             android:title="Enable Chat" />
 
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_chat_dark"
+            android:summary="Enables dark mode for chat."
+            android:title="Dark Mode Chat" />
+
     </PreferenceCategory>
 </PreferenceScreen>

@@ -30,13 +30,10 @@ public class PlayerFragment extends Fragment {
             if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("enable_chat", true)) {
                 WebView chatWebView = ((MainActivity) getActivity()).chatWebView;
 
-                String chatHTML = "<html><body style=\"margin: 0px;\"><iframe frameborder=\"0\"\n" +
-                        "        scrolling=\"yes\"\n" +
-                        "        src=\"https://www.twitch.tv/" + getArguments().getString("channel") + "/chat?popout=\"\n" +
-                        "        style=\"width: 100%; height: 100%;\"\n" +
-                        "></body></html>\n";
-
-                chatWebView.loadData(chatHTML, "text/html", "UTF-8");
+                if(PreferenceManager.getDefaultSharedPreferences(getContext()).getBoolean("enable_chat_dark", false))
+                    chatWebView.loadUrl("https://www.twitch.tv/popout/" + getArguments().getString("channel") + "/chat?darkpopout=");
+                else
+                    chatWebView.loadUrl("https://www.twitch.tv/popout/" + getArguments().getString("channel") + "/chat?popout=");
             }
 
             getActivity().setTitle(getArguments().getString("channel"));
