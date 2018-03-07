@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
-public class UserData {
-    final static String followingKeyName = "following";
+class UserData {
+    private final static String followingKeyName = "following";
 
     static boolean isFollowing(Context context, String username) {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
@@ -23,9 +23,7 @@ public class UserData {
         Set<String> followedStreamers = settings.getStringSet(followingKeyName, new HashSet<String>());
 
         ArrayList<String> followingList = new ArrayList<>();
-        for (String streamer : followedStreamers) {
-            followingList.add(streamer);
-        }
+        followingList.addAll(followedStreamers);
 
         return followingList;
     }

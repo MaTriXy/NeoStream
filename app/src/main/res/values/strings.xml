@@ -18,4 +18,6 @@
 
     <string name="filter">Filter</string>
     <string name="sort">Sort</string>
+
+    <string name="host_alert" formatted="false">%s is currently hosting %s</string>
 </resources>

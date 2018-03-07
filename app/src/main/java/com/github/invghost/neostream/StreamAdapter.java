@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -43,23 +44,23 @@ class StreamAdapter extends BaseAdapter {
         View vi = convertView;
 
         if (vi == null)
-            vi = inflater.inflate(R.layout.list_item_stream, null);
+            vi = inflater.inflate(R.layout.list_item_stream, parent, false);
 
-        TextView titleText = (TextView)vi.findViewById(R.id.lblTitle);
+        TextView titleText = vi.findViewById(R.id.lblTitle);
         titleText.setText(data.get(position).channel.status);
 
-        TextView gameText = (TextView)vi.findViewById(R.id.lblGame);
+        TextView gameText = vi.findViewById(R.id.lblGame);
         gameText.setText(data.get(position).channel.game);
 
-        TextView channelText = (TextView)vi.findViewById(R.id.lblChannel);
+        TextView channelText = vi.findViewById(R.id.lblChannel);
         channelText.setText(data.get(position).channel.displayName);
 
-        TextView viewsText = (TextView)vi.findViewById(R.id.lblViewers);
+        TextView viewsText = vi.findViewById(R.id.lblViewers);
         viewsText.setText(Utility.formatNumber(data.get(position).viewers));
 
-        ImageView imageView = (ImageView)vi.findViewById(R.id.imgThumbnail);
+        ImageView imageView = vi.findViewById(R.id.imgThumbnail);
 
-        Glide.with(context).load(data.get(position).thumbnailURL).into(imageView);
+        Glide.with(context).load(data.get(position).thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).into(imageView);
 
         return vi;
     }

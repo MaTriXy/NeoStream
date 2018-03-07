@@ -58,7 +58,7 @@ public class VideosFragment extends Fragment {
 
         adapter = new VideoAdapter(getContext());
 
-        Spinner filterSpinner = (Spinner)view.findViewById(R.id.videoFilterSpinner);
+        Spinner filterSpinner = view.findViewById(R.id.videoFilterSpinner);
         ArrayAdapter<CharSequence> filterAdapter = ArrayAdapter.createFromResource(getContext(), R.array.video_types, android.R.layout.simple_spinner_item);
 
         filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -89,7 +89,7 @@ public class VideosFragment extends Fragment {
             }
         });
 
-        Spinner sortSpinner = (Spinner)view.findViewById(R.id.videoSortSpinner);
+        Spinner sortSpinner = view.findViewById(R.id.videoSortSpinner);
         ArrayAdapter<CharSequence> sortAdapter = ArrayAdapter.createFromResource(getContext(), R.array.video_sorts, android.R.layout.simple_spinner_item);
 
         sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -117,7 +117,7 @@ public class VideosFragment extends Fragment {
             }
         });
 
-        ListView videoList = (ListView)view.findViewById(R.id.videoList);
+        ListView videoList = view.findViewById(R.id.videoList);
         videoList.setAdapter(adapter);
 
         videoList.setOnItemClickListener(new AdapterView.OnItemClickListener(){
@@ -148,8 +148,10 @@ public class VideosFragment extends Fragment {
         loadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
-                currentOffset += 10;
-                new LoadVideosTask(adapter, currentFilter, currentSort, currentOffset).execute(channel.username);
+                if(channel != null) {
+                    currentOffset += 10;
+                    new LoadVideosTask(adapter, currentFilter, currentSort, currentOffset).execute(channel.username);
+                }
             }
         });
 
@@ -170,7 +172,7 @@ public class VideosFragment extends Fragment {
 
         new LoadVideosTask(adapter, currentFilter, currentSort, 0).execute(channel.username);
 
-        ListView videoList = (ListView)getView().findViewById(R.id.videoList);
+        ListView videoList = getView().findViewById(R.id.videoList);
         videoList.setSelectionAfterHeaderView();
     }
 }

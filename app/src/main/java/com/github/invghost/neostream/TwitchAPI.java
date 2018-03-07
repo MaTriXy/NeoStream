@@ -335,12 +335,11 @@ class TwitchAPI {
         try {
             //FIXME: HTTP is bad!
             URL url = new URL("http://usher.twitch.tv/api/channel/hls/" + URLEncoder.encode(username, "UTF-8") + ".m3u8?player=twitchweb&token=" +
-                    URLEncoder.encode(GetAccessToken(username), "UTF-8") + "&sig=" + URLEncoder.encode(GetSignature(username), "UTF-8") + "&allow_audio=only=true" +
-                    "&allow_source=true&type=any");
+                    URLEncoder.encode(GetAccessToken(username), "UTF-8") + "&sig=" + URLEncoder.encode(GetSignature(username), "UTF-8") + "&allow_source=true&allow_audio_only=true");
 
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.setRequestProperty("Client-ID", "zdol60x6sxbx0phk60ci6mki79qhrf");
-            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64; rv:53.0) Gecko/20100101 Firefox/53.0");
+            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.94 Safari/537.36");
             urlConnection.setUseCaches(false);
 
             InputStream inputStream;

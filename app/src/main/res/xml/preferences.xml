@@ -16,26 +16,24 @@
         <CheckBoxPreference
             android:defaultValue="false"
             android:key="use_external_player"
-            android:summary="Use a installed video player instead of the HTML5 player."
+            android:summary="Use another video player instead of the HTML5 player."
             android:title="Use external video player" />
-        <ListPreference
-            android:defaultValue="1"
-            android:dependency="use_external_player"
-            android:entries="@array/qualities"
-            android:entryValues="@array/qualities"
-            android:key="preferred_quality"
-            android:summary="Only applies to external video player"
-            android:title="Default Quality" />
 
     </PreferenceCategory>
 
     <PreferenceCategory android:title="Other">
 
         <CheckBoxPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="enable_chat"
             android:summary="Shows the chat at the bottom of the screen if using the HTML5 player."
             android:title="Enable Chat" />
+
+        <CheckBoxPreference
+            android:defaultValue="false"
+            android:key="enable_chat_dark"
+            android:summary="Enables dark mode for chat."
+            android:title="Dark Mode Chat" />
 
     </PreferenceCategory>
 </PreferenceScreen>

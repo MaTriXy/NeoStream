@@ -14,9 +14,6 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,8 +24,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation;
-
-import java.util.ArrayList;
 
 import static com.github.invghost.neostream.Utility.getColor;
 import static com.github.invghost.neostream.Utility.getDrawable;
@@ -91,14 +86,14 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
         if(fragment == null || fragment.getView() == null || channel == null)
             return;
 
-        ImageView imageView = (ImageView)fragment.getView().findViewById(R.id.channelBanner);
+        ImageView imageView = fragment.getView().findViewById(R.id.channelBanner);
 
         if(channel.bannerURL != null)
             Glide.with(fragment.getContext()).load(channel.bannerURL).transform(new BlurTransformation(fragment.getContext())).crossFade().into(imageView);
 
         imageView.setColorFilter(Color.rgb(100, 100, 100), android.graphics.PorterDuff.Mode.MULTIPLY);
 
-        ImageView logoImageView = (ImageView)fragment.getView().findViewById(R.id.channelLogo);
+        ImageView logoImageView = fragment.getView().findViewById(R.id.channelLogo);
         if(channel.logoURL != null)
             Glide.with(fragment.getContext()).load(channel.logoURL).crossFade().into(logoImageView);
 
@@ -119,25 +114,8 @@ class RetrieveChannelTask extends AsyncTask<String, Void, TwitchChannel> {
         fragment.getActivity().setTitle(channel.displayName);
         fragment.displayName = channel.displayName;
 
-        ViewPager viewPager = (ViewPager)fragment.getView().findViewById(R.id.pager);
+        ViewPager viewPager = fragment.getView().findViewById(R.id.pager);
         viewPager.setAdapter(new ChannelTabsAdapter(channel, fragment.getChildFragmentManager()));
-    }
-}
-
-class RetrieveQualitiesTask extends AsyncTask<String, Void, ArrayList<String>> {
-    private ChannelFragment fragment;
-
-    RetrieveQualitiesTask(ChannelFragment fragment) {
-        this.fragment = fragment;
-    }
-
-    protected ArrayList<String> doInBackground(String... urls) {
-        return TwitchAPI.GetQualities(urls[0]);
-    }
-
-    protected void onPostExecute(ArrayList<String> qualities) {
-        if(fragment.getView() == null)
-            return;
     }
 }
 
@@ -150,9 +128,6 @@ public class ChannelFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         new RetrieveChannelTask(this).execute(getArguments().getString("channel"));
-        new RetrieveQualitiesTask(this).execute(getArguments().getString("channel"));
-
-        setHasOptionsMenu(true);
 
         following = UserData.isFollowing(getContext(), getArguments().getString("channel"));
     }
@@ -162,7 +137,6 @@ public class ChannelFragment extends Fragment {
         super.onResume();
 
         new RetrieveChannelTask(this).execute(getArguments().getString("channel"));
-        new RetrieveQualitiesTask(this).execute(getArguments().getString("channel"));
 
         getActivity().setTitle(displayName);
     }
@@ -172,12 +146,12 @@ public class ChannelFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_channel, container, false);
 
-        TabLayout tabStrip = (TabLayout)view.findViewById(R.id.channelTabLayout);
+        TabLayout tabStrip = view.findViewById(R.id.channelTabLayout);
         tabStrip.setSelectedTabIndicatorColor(getColor(getContext(), R.color.tabText));
         tabStrip.setTabTextColors(getColor(getContext(), R.color.tabText), getColor(getContext(), R.color.tabText));
         tabStrip.setupWithViewPager((ViewPager)view.findViewById(R.id.pager));
 
-        final Button followButton = (Button)view.findViewById(R.id.followButton);
+        final Button followButton = view.findViewById(R.id.followButton);
         if(following)
             followButton.setBackground(getDrawable(getContext(), R.drawable.ic_favorite_black_24dp));
 
@@ -197,11 +171,6 @@ public class ChannelFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_channel, menu);
-    }
-
     void follow() {
         UserData.addFollow(getContext(), getArguments().getString("channel"));
 
@@ -218,18 +187,5 @@ public class ChannelFragment extends Fragment {
         toast.show();
 
         following = false;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.channelFollow)
-        {
-
-
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }

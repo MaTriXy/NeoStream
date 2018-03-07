@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.ArrayList;
 
@@ -24,10 +25,6 @@ class VideoAdapter extends BaseAdapter {
         this.context = context;
         this.data = new ArrayList<>();
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    }
-
-    void add(TwitchVideo video) {
-        data.add(video);
     }
 
     @Override
@@ -47,23 +44,23 @@ class VideoAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final View vi = inflater.inflate(R.layout.list_item_video, null);
+        final View vi = inflater.inflate(R.layout.list_item_video, parent, false);
 
-        TextView channelText = (TextView)vi.findViewById(R.id.streamTitle);
+        TextView channelText = vi.findViewById(R.id.streamTitle);
         channelText.setText(data.get(position).title);
 
-        TextView gameText = (TextView)vi.findViewById(R.id.gameTitle);
+        TextView gameText = vi.findViewById(R.id.gameTitle);
         if(data.get(position).game != null)
             gameText.setText(data.get(position).game);
 
-        ImageView thumbnailView = (ImageView)vi.findViewById(R.id.streamThumbnail);
-        Glide.with(context).load(data.get(position).thumbnailURL).crossFade().into(thumbnailView);
+        ImageView thumbnailView = vi.findViewById(R.id.streamThumbnail);
+        Glide.with(context).load(data.get(position).thumbnailURL).diskCacheStrategy(DiskCacheStrategy.NONE).crossFade().into(thumbnailView);
         thumbnailView.setColorFilter(Color.rgb(123, 123, 123), android.graphics.PorterDuff.Mode.MULTIPLY);
 
-        ImageView gameCoverView = (ImageView)vi.findViewById(R.id.streamGameCover);
+        ImageView gameCoverView = vi.findViewById(R.id.streamGameCover);
         Glide.with(context).load("https://static-cdn.jtvnw.net/ttv-boxart/" + data.get(position).game.replaceAll(" ", "%20") + "-136x190.jpg").crossFade().into(gameCoverView);
 
-        Button shareButton = (Button)vi.findViewById(R.id.streamShareButton);
+        Button shareButton = vi.findViewById(R.id.streamShareButton);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

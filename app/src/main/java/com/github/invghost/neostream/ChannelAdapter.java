@@ -47,16 +47,16 @@ class ChannelAdapter extends BaseAdapter {
         View vi = convertView;
 
         if (vi == null)
-            vi = inflater.inflate(R.layout.list_item_channel, null);
+            vi = inflater.inflate(R.layout.list_item_channel, parent, false);
 
-        TextView channelText = (TextView)vi.findViewById(R.id.lblChannel);
+        TextView channelText = vi.findViewById(R.id.lblChannel);
         channelText.setText(data.get(position).displayName);
 
         String url = data.get(position).logoURL;
         if(url == null)
             url = data.get(position).offlineBannerURL;
 
-        ImageView imageView = (ImageView)vi.findViewById(R.id.imgIcon);
+        ImageView imageView = vi.findViewById(R.id.imgIcon);
         Glide.with(context).load(url).crossFade().into(imageView);
 
         return vi;
